@@ -124,10 +124,20 @@ export default function ClientsManager() {
                   <h3 className="text-xl font-bold text-white uppercase italic tracking-tighter">{client.name}</h3>
                   <p className="text-[8px] font-mono text-white/20 uppercase tracking-widest">{client.id}</p>
                 </div>
-                <div 
-                    className="w-4 h-4 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.1)] border border-white/10" 
-                    style={{ backgroundColor: client.brand_settings?.primary_color }}
-                />
+                <div className="flex flex-col items-end gap-2">
+                    <div 
+                        className="w-4 h-4 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.1)] border border-white/10" 
+                        style={{ backgroundColor: client.brand_settings?.primary_color }}
+                    />
+                    <a 
+                        href={`https://${client.subdomain}.rankia.cloud`} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-[8px] font-black uppercase tracking-widest text-indigo-400 hover:text-white transition-colors"
+                    >
+                        Ver Site ↗
+                    </a>
+                </div>
              </div>
              
              <div className="space-y-3 relative z-10">
