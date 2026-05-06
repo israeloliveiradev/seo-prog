@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createServiceClient } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
 
 export default function BulkSeeder() {
   const [campaigns, setCampaigns] = useState<any[]>([]);
@@ -12,7 +12,6 @@ export default function BulkSeeder() {
 
   useEffect(() => {
     const fetchCampaigns = async () => {
-      const supabase = createServiceClient();
       const { data } = await supabase.from('campaigns').select('id, name');
       setCampaigns(data || []);
     };
@@ -36,7 +35,6 @@ export default function BulkSeeder() {
     if (!selectedCampaign || !serviceName || locations.length === 0) return;
 
     setIsSeeding(true);
-    const supabase = createServiceClient();
 
     const pagesToInsert = locations.map(loc => ({
       campaign_id: selectedCampaign,

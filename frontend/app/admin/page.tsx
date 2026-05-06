@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createServiceClient } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
 
 export default function AdminDashboard() {
   const [metrics, setMetrics] = useState<any>(null);
@@ -9,9 +9,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     const fetchMetrics = async () => {
-      const supabase = createServiceClient();
-      
-      // Busca contagem por status
+      // Usa o cliente anon (público) que funciona no navegador
       const { data: pages } = await supabase.from('generated_pages').select('status');
       
       const stats = {

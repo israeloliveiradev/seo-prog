@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createServiceClient } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
 
 export default function ClientsManager() {
   const [clients, setClients] = useState<any[]>([]);
@@ -20,7 +20,6 @@ export default function ClientsManager() {
   }, []);
 
   const fetchClients = async () => {
-    const supabase = createServiceClient();
     const { data } = await supabase.from('clients').select('*').order('created_at', { ascending: false });
     setClients(data || []);
   };
