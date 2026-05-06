@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+/* =====================================================
+   Design System — SEO Programático Industrial
+   Tema: Dark Precision / Industrial Premium
+   ===================================================== */
+
+:root {
+  --color-bg:        #0a0a0f;
+  --color-surface:   #0e0e1a;
+  --color-border:    rgba(255, 255, 255, 0.06);
+  --color-text:      rgba(255, 255, 255, 0.9);
+  --color-muted:     rgba(255, 255, 255, 0.4);
+  --color-accent:    #6366f1;   /* indigo-500 */
+  --color-accent-h:  #818cf8;   /* indigo-400 hover */
+  --color-success:   #34d399;   /* emerald-400 */
+}
+
+html {
+  font-family: var(--font-space), system-ui, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+}
+
+/* =====================================================
+   PROSE SEO — Estilos para o conteúdo HTML do Gemini
+   Renderizado via dangerouslySetInnerHTML
+   ===================================================== */
+.prose-seo {
+  max-width: 70ch;
+  line-height: 1.75;
+}
+
+.prose-seo h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+  letter-spacing: -0.02em;
+}
+
+.prose-seo h2:first-child {
+  margin-top: 0;
+}
+
+.prose-seo h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.01em;
+}
+
+.prose-seo p {
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 1.25rem;
+  font-size: 1rem;
+}
+
+.prose-seo ul {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0;
+  space-y: 0.5rem;
+}
+
+.prose-seo ul li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 0.5rem 0;
+  font-size: 0.9375rem;
+}
+
+.prose-seo ul li::before {
+  content: '›';
+  color: #6366f1;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 0.05em;
+  font-size: 1.1em;
+}
+
+.prose-seo strong {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+}
+
+/* Animação suave no carregamento */
+.prose-seo {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Scrollbar estilizada */
+::-webkit-scrollbar        { width: 6px; height: 6px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: rgba(255,255,255,0.1); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+/* Seleção de texto */
+::selection {
+  background: rgba(99, 102, 241, 0.3);
+  color: white;
+}
