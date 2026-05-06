@@ -37,7 +37,7 @@ export default function OperationsPage() {
            <div className="space-y-8">
               <div className="p-8 rounded-2xl border border-white/5 bg-white/[0.02]">
                  <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-6">Criar Nova Estratégia</p>
-                 <CampaignManager />
+                 <CampaignManager onCampaignCreated={() => {}} />
               </div>
            </div>
          ) : (
