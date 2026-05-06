@@ -20,14 +20,14 @@ export default function BulkSeeder() {
 
   const slugify = (text: string) => {
     return text
-      .toString()
-      .toLowerCase()
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^\w\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/--+/g, '-')
-      .trim();
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/[\s_]+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-+|-+$/g, '');
   };
 
   const handleSeed = async () => {
@@ -36,22 +36,31 @@ export default function BulkSeeder() {
 
     setIsSeeding(true);
 
-    const pagesToInsert = locations.map(loc => ({
-      campaign_id: selectedCampaign,
-      service_name: serviceName,
-      location: loc.trim(),
-      slug: slugify(`${serviceName} em ${loc.trim()}`),
-      status: 'PENDING'
-    }));
+    try {
+      const res = await fetch('/api/admin/seed', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer authenticated'
+        },
+        body: JSON.stringify({
+          locations,
+          serviceName,
+          campaignId: selectedCampaign
+        })
+      });
 
-    const { error } = await supabase.from('generated_pages').insert(pagesToInsert);
+      const data = await res.json();
 
-    if (error) alert('Erro: ' + error.message);
-    else {
-      alert(`${locations.length} páginas enviadas para a fila de produção!`);
+      if (!res.ok) throw new Error(data.error || 'Erro ao semear páginas');
+
+      alert(`Sucesso! ${data.inserted} novas páginas inseridas. ${data.skipped} já existiam.`);
       setLocationsText('');
+    } catch (err) {
+      alert('Erro: ' + (err as Error).message);
+    } finally {
+      setIsSeeding(false);
     }
-    setIsSeeding(false);
   };
 
   const locations = locationsText.split('\n').filter(loc => loc.trim());
