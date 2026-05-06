@@ -42,7 +42,6 @@ export default async function middleware(req: NextRequest) {
   }
 
   // Se chegamos aqui, é um CLIENTE (subdomínio ou domínio customizado)
-  // Fazemos o rewrite interno para a pasta /_sites/[host]/...
-  // O Next.js vai procurar os arquivos em app/_sites/[site]/...
-  return NextResponse.rewrite(new URL(`/_sites/${currentHost}${url.pathname}`, req.url));
+  // Fazemos o rewrite interno para a pasta /sites/[host]/...
+  return NextResponse.rewrite(new URL(`/sites/${currentHost}${url.pathname}`, req.url));
 }
