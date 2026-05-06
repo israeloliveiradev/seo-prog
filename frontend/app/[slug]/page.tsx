@@ -111,7 +111,7 @@ export default async function SlugPage({ params }: PageProps) {
       <header className="relative overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/20 via-transparent to-violet-900/10" />
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5" />
-        
+
         <div className="relative max-w-4xl mx-auto px-6 py-20">
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-sm text-white/30 mb-8 font-mono">

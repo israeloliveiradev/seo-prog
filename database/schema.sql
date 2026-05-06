@@ -8,53 +8,62 @@
 -- Extensão para geração de UUIDs
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
--- =====================================================
--- TABELA: campaigns
--- Armazena configurações de campanhas de SEO
--- =====================================================
-CREATE TABLE IF NOT EXISTS campaigns (
-  id            UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
-  name          TEXT        NOT NULL,
-  target_audience TEXT      NOT NULL,
-  core_keywords JSONB       NOT NULL DEFAULT '[]'::jsonb,
-  created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+-- ==========================================
+-- 1. TABELA DE CLIENTES (TENANTS)
+-- ==========================================
+CREATE TABLE IF NOT EXISTS clients (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  subdomain TEXT UNIQUE NOT NULL,
+  custom_domain TEXT UNIQUE,
+  brand_settings JSONB DEFAULT '{
+    "primary_color": "#000000",
+    "logo_url": null,
+    "company_name": "New Client",
+    "contact_whatsapp": ""
+  }'::jsonb,
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Índice para busca por nome de campanha
-CREATE INDEX IF NOT EXISTS idx_campaigns_name ON campaigns(name);
+-- ==========================================
+-- 2. CAMPANHAS (VINCULADAS AO CLIENTE)
+-- ==========================================
+CREATE TABLE IF NOT EXISTS campaigns (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  client_id UUID REFERENCES clients(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  target_audience TEXT NOT NULL,
+  core_keywords JSONB NOT NULL DEFAULT '[]'::jsonb,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
 
--- =====================================================
--- ENUM: page_status
--- Controla o ciclo de vida de processamento de páginas
--- =====================================================
+CREATE INDEX IF NOT EXISTS idx_campaigns_client ON campaigns(client_id);
+
+-- ==========================================
+-- 3. PÁGINAS GERADAS
+-- ==========================================
+-- Garante que o tipo exista
 DO $$ BEGIN
-    CREATE TYPE page_status AS ENUM (
-        'PENDING',
-        'PROCESSING',
-        'COMPLETED',
-        'ERROR'
-    );
+    CREATE TYPE page_status AS ENUM ('PENDING', 'PROCESSING', 'COMPLETED', 'FAILED');
 EXCEPTION
     WHEN duplicate_object THEN null;
 END $$;
 
--- =====================================================
--- TABELA: generated_pages
--- Armazena as páginas geradas pelo motor de automação
--- =====================================================
 CREATE TABLE IF NOT EXISTS generated_pages (
-  id               UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
-  campaign_id      UUID        NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
-  service_name     TEXT        NOT NULL,
-  location         TEXT        NOT NULL,
-  slug             TEXT        NOT NULL UNIQUE,
-  ai_content       TEXT,
-  status           page_status NOT NULL DEFAULT 'PENDING',
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  campaign_id UUID REFERENCES campaigns(id) ON DELETE CASCADE,
+  client_id UUID REFERENCES clients(id) ON DELETE CASCADE,
+  service_name TEXT NOT NULL,
+  location TEXT NOT NULL,
+  slug TEXT NOT NULL,
+  ai_content TEXT,
   meta_description TEXT,
-  attempts         INTEGER     NOT NULL DEFAULT 0,
-  last_error       TEXT,
-  created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  status page_status DEFAULT 'PENDING',
+  attempts INTEGER DEFAULT 0,
+  last_error TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(client_id, slug) -- Importante: Slug único POR CLIENTE
 );
 
 -- =====================================================

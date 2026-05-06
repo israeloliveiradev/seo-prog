@@ -16,9 +16,21 @@ export default function CampaignManager({ onCampaignCreated }: { onCampaignCreat
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [clients, setClients] = useState<any[]>([]);
+  const [clientId, setClientId] = useState('');
 
   useEffect(() => {
     setMounted(true);
+    // Busca clientes para o seletor
+    const fetchClients = async () => {
+      const res = await fetch('/api/admin/clients/list');
+      if (res.ok) {
+        const data = await res.json();
+        setClients(data);
+        if (data.length > 0) setClientId(data[0].id);
+      }
+    };
+    fetchClients();
     return () => setMounted(false);
   }, []);
 
@@ -36,6 +48,7 @@ export default function CampaignManager({ onCampaignCreated }: { onCampaignCreat
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name,
+          client_id: clientId,
           target_audience: targetAudience,
           core_keywords: keywords
         }),
@@ -117,6 +130,26 @@ export default function CampaignManager({ onCampaignCreated }: { onCampaignCreat
               {/* Form Content */}
               <form onSubmit={handleSubmit} className="p-8 space-y-8">
                 
+                {/* Field: Cliente */}
+                <div className="group relative">
+                  <label className="text-[10px] font-black text-indigo-400/60 uppercase tracking-[0.2em] ml-1 mb-2 block">
+                    Proprietário (Cliente)
+                  </label>
+                  <select 
+                    value={clientId}
+                    onChange={e => setClientId(e.target.value)}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-sm text-white focus:outline-none focus:border-indigo-500 focus:bg-white/[0.08] transition-all appearance-none cursor-pointer"
+                    required
+                  >
+                    {clients.length === 0 && <option value="">Carregando inquilinos...</option>}
+                    {clients.map(c => (
+                      <option key={c.id} value={c.id} className="bg-[#0d0d16] text-white">
+                        {c.name} ({c.subdomain})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
                 {/* Field: Nome */}
                 <div className="group relative">
                   <label className="text-[10px] font-black text-indigo-400/60 uppercase tracking-[0.2em] ml-1 mb-2 block">

@@ -8,6 +8,7 @@ import { createServiceClient } from '@/lib/supabase';
 
 const campaignSchema = z.object({
   name: z.string().min(3).max(100),
+  client_id: z.string().uuid(),
   target_audience: z.string().min(5).max(200),
   core_keywords: z.array(z.string()).min(1),
 });
@@ -21,7 +22,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Dados inválidos', details: parsed.error.issues }, { status: 400 });
     }
 
-    const { name, target_audience, core_keywords } = parsed.data;
+    const { name, client_id, target_audience, core_keywords } = parsed.data;
     const supabase = createServiceClient();
 
     const { data, error } = await supabase
@@ -29,8 +30,9 @@ export async function POST(req: NextRequest) {
       .insert([
         { 
           name, 
+          client_id,
           target_audience, 
-          core_keywords // O Supabase/Postgres aceita JSONB direto do JS
+          core_keywords 
         }
       ])
       .select()

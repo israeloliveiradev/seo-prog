@@ -23,10 +23,21 @@ export class PageRepository {
    * Busca um lote de páginas prontas para processamento.
    * Usa o índice parcial idx_generated_pages_pending_processing.
    */
-  async fetchPendingBatch(limit: number): Promise<GeneratedPage[]> {
+  async fetchPendingBatch(limit: number): Promise<any[]> {
     const { data, error } = await this.db
       .from('generated_pages')
-      .select('*')
+      .select(`
+        *,
+        campaigns (
+          name,
+          target_audience,
+          core_keywords,
+          clients (
+            name,
+            brand_settings
+          )
+        )
+      `)
       .in('status', ['PENDING', 'ERROR'])
       .lt('attempts', 3)
       .order('updated_at', { ascending: true })

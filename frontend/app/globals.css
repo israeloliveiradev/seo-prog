@@ -28,69 +28,75 @@ html {
    PROSE SEO — Estilos para o conteúdo HTML do Gemini
    Renderizado via dangerouslySetInnerHTML
    ===================================================== */
-.prose-seo {
-  max-width: 70ch;
-  line-height: 1.75;
+/* =====================================================
+   PROSE INDUSTRIAL — Estilos para o conteúdo HTML gerado
+   ===================================================== */
+.prose-industrial {
+  max-width: 100%;
+  line-height: 1.8;
+  font-size: 1.05rem;
 }
 
-.prose-seo h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
+.prose-industrial h2 {
+  font-size: 1.875rem;
+  font-weight: 900;
   color: #fff;
-  margin-top: 3rem;
-  margin-bottom: 1rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid rgba(99, 102, 241, 0.2);
-  letter-spacing: -0.02em;
+  margin-top: 4rem;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  font-style: italic;
+  letter-spacing: -0.04em;
+  border-left: 4px solid var(--client-primary, #6366f1);
+  padding-left: 1.5rem;
 }
 
-.prose-seo h2:first-child {
+.prose-industrial h2:first-child {
   margin-top: 0;
 }
 
-.prose-seo h3 {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
-  margin-top: 2rem;
-  margin-bottom: 0.75rem;
-  letter-spacing: -0.01em;
+.prose-industrial h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
 }
 
-.prose-seo p {
-  color: rgba(255, 255, 255, 0.6);
-  margin-bottom: 1.25rem;
-  font-size: 1rem;
+.prose-industrial p {
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 1.5rem;
 }
 
-.prose-seo ul {
+.prose-industrial ul {
   list-style: none;
   padding: 0;
-  margin: 1.5rem 0;
-  space-y: 0.5rem;
+  margin: 2rem 0;
+  display: grid;
+  grid-template-cols: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
 }
 
-.prose-seo ul li {
+.prose-industrial ul li {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.05);
+  padding: 1rem 1.25rem;
+  border-radius: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  font-weight: 500;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.75rem;
-  color: rgba(255, 255, 255, 0.6);
-  padding: 0.5rem 0;
-  font-size: 0.9375rem;
 }
 
-.prose-seo ul li::before {
-  content: '›';
-  color: #6366f1;
-  font-weight: 700;
-  flex-shrink: 0;
-  margin-top: 0.05em;
-  font-size: 1.1em;
-}
-
-.prose-seo strong {
-  color: rgba(255, 255, 255, 0.9);
-  font-weight: 600;
+.prose-industrial ul li::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 99px;
+  background: var(--client-primary, #6366f1);
+  box-shadow: 0 0 8px var(--client-primary, #6366f1);
 }
 
 /* Animação suave no carregamento */

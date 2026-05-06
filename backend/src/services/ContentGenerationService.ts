@@ -26,10 +26,15 @@ export class ContentGenerationService {
    * Processa uma única página com tratamento de erros robusto.
    * O status PROCESSING garante que outro worker não reprocesse a mesma página.
    */
-  async processPage(page: GeneratedPage, keywords: string[]): Promise<void> {
-    const { id, service_name, location, attempts } = page;
+  async processPage(page: any, keywords: string[]): Promise<void> {
+    const { id, service_name, location, attempts, campaigns } = page;
+    
+    // Extrai dados do cliente via relacionamento
+    const client = campaigns?.clients;
+    const clientName = client?.name || 'Empresa Especializada';
+    const targetAudience = campaigns?.target_audience || 'Público Geral';
 
-    logger.info(`Iniciando processamento da página: "${service_name}" em "${location}"`, {
+    logger.info(`Iniciando processamento para CLIENTE: ${clientName} - Página: "${service_name}" em "${location}"`, {
       id,
       attempt: attempts + 1,
     });
@@ -38,9 +43,15 @@ export class ContentGenerationService {
       // PASSO 1: Marca como PROCESSING para evitar processamento duplo
       await this.pageRepo.markAsProcessing(id);
 
-      // PASSO 2: Gera conteúdo e meta description em paralelo
+      // PASSO 2: Gera conteúdo e meta description em paralelo com contexto de marca
       const [aiContent, metaDescription] = await Promise.all([
-        this.gemini.generatePageContent({ serviceName: service_name, location, keywords }),
+        this.gemini.generatePageContent({ 
+          serviceName: service_name, 
+          location, 
+          keywords,
+          clientName,
+          targetAudience
+        }),
         this.gemini.generateMetaDescription(service_name, location),
       ]);
 
