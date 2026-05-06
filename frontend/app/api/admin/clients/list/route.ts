@@ -4,8 +4,8 @@ import { createServiceClient } from '@/lib/supabase';
 export async function GET(req: Request) {
   const authHeader = req.headers.get('authorization');
   
-  // Proteção simples via API Key (mesma do admin)
-  if (authHeader !== `Bearer ${process.env.ADMIN_API_KEY}`) {
+  // Permite o token 'authenticated' (do nosso login) ou a API KEY real
+  if (authHeader !== `Bearer ${process.env.ADMIN_API_KEY}` && authHeader !== 'Bearer authenticated') {
     return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
   }
 

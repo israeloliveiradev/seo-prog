@@ -20,8 +20,17 @@ export default function ClientsManager() {
   }, []);
 
   const fetchClients = async () => {
-    const { data } = await supabase.from('clients').select('*').order('created_at', { ascending: false });
-    setClients(data || []);
+    try {
+      const res = await fetch('/api/admin/clients/list', {
+        headers: { 'Authorization': 'Bearer authenticated' }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setClients(data || []);
+      }
+    } catch (err) {
+      console.error('Erro ao buscar clientes:', err);
+    }
   };
 
   const handleCreateClient = async (e: React.FormEvent) => {
@@ -63,25 +72,36 @@ export default function ClientsManager() {
     }
   };
 
+  const handleDeleteClient = async (id: string) => {
+    if (!confirm('ATENÇÃO: Isso apagará o cliente e TODAS as suas campanhas e páginas. Confirmar destruição?')) return;
+    
+    try {
+      const res = await fetch(`/api/admin/clients/delete?id=${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': 'Bearer authenticated' }
+      });
+      if (res.ok) fetchClients();
+      else alert('Erro ao excluir cliente.');
+    } catch (err) {
+      alert('Erro na conexão.');
+    }
+  };
+
   return (
     <div className="space-y-10 animate-fadeIn">
-      <div className="flex justify-between items-end">
-        <div>
-          <h1 className="text-4xl font-black uppercase italic tracking-tighter">Inquilinos</h1>
-          <p className="text-[10px] font-bold text-white/20 uppercase tracking-[0.3em] mt-2">Gerenciamento de Instâncias SaaS</p>
-        </div>
-        <button 
-          onClick={() => setIsModalOpen(true)}
-          className="px-8 py-3 bg-white text-black font-black uppercase tracking-widest text-[10px] rounded-xl hover:bg-indigo-400 hover:text-white transition-all shadow-xl"
-        >
-          Novo Cliente
-        </button>
-      </div>
-
-      {/* Lista de Clientes */}
+      {/* ... (anterior) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {clients.map(client => (
           <div key={client.id} className="p-8 rounded-2xl border border-white/5 bg-white/[0.02] relative overflow-hidden group">
+             {/* Botão de Excluir */}
+             <button 
+                onClick={() => handleDeleteClient(client.id)}
+                className="absolute top-4 right-4 z-20 w-8 h-8 rounded-lg bg-red-500/10 text-red-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white"
+                title="Excluir Cliente"
+             >
+                ✕
+             </button>
+
              <div 
                 className="absolute top-0 right-0 w-24 h-24 blur-3xl opacity-10 group-hover:opacity-30 transition-all"
                 style={{ backgroundColor: client.brand_settings?.primary_color }}

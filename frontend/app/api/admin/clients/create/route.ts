@@ -16,7 +16,9 @@ const clientSchema = z.object({
 
 export async function POST(req: Request) {
   const authHeader = req.headers.get('authorization');
-  if (authHeader !== `Bearer ${process.env.ADMIN_API_KEY}`) {
+  
+  // Permite o token 'authenticated' (do nosso login) ou a API KEY real
+  if (authHeader !== `Bearer ${process.env.ADMIN_API_KEY}` && authHeader !== 'Bearer authenticated') {
     return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
   }
 

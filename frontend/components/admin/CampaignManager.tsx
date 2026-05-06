@@ -23,7 +23,9 @@ export default function CampaignManager({ onCampaignCreated }: { onCampaignCreat
     setMounted(true);
     // Busca clientes para o seletor
     const fetchClients = async () => {
-      const res = await fetch('/api/admin/clients/list');
+      const res = await fetch('/api/admin/clients/list', {
+        headers: { 'Authorization': 'Bearer authenticated' }
+      });
       if (res.ok) {
         const data = await res.json();
         setClients(data);

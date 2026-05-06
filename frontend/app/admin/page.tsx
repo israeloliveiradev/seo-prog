@@ -9,18 +9,19 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     const fetchMetrics = async () => {
-      // Usa o cliente anon (público) que funciona no navegador
-      const { data: pages } = await supabase.from('generated_pages').select('status');
-      
-      const stats = {
-        COMPLETED: pages?.filter(p => p.status === 'COMPLETED').length || 0,
-        PENDING: pages?.filter(p => p.status === 'PENDING').length || 0,
-        PROCESSING: pages?.filter(p => p.status === 'PROCESSING').length || 0,
-        FAILED: pages?.filter(p => p.status === 'FAILED' || p.status === 'ERROR').length || 0,
-      };
-
-      setMetrics(stats);
-      setIsLoading(false);
+      try {
+        const res = await fetch('/api/admin/metrics', {
+          headers: { 'Authorization': 'Bearer authenticated' }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setMetrics(data.counts);
+        }
+      } catch (err) {
+        console.error('Erro ao buscar métricas:', err);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     fetchMetrics();
