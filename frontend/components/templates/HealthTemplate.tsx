@@ -46,7 +46,7 @@ export const HealthTemplate: React.FC<TemplateProps> = ({ client, page, pages })
             Agendar Consulta
           </a>
         </div>
-      </header>
+      </motion.header>
 
       {/* Hero Saúde */}
       <section className="relative py-20 lg:py-32 overflow-hidden">

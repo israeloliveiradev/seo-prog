@@ -40,7 +40,7 @@ export const EducationTemplate: React.FC<TemplateProps> = ({ client, page, pages
         >
           Matricule-se Já
         </a>
-      </header>
+      </motion.header>
 
       {/* Hero Educação */}
       <section className="py-20 lg:py-32 bg-slate-50 relative overflow-hidden">
