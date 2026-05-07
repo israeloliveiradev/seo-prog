@@ -68,7 +68,7 @@ export const RetailTemplate: React.FC<TemplateProps> = ({ client, page, pages })
             viewport={{ once: true }}
             className="relative rounded-3xl md:rounded-[40px] overflow-hidden shadow-2xl aspect-video md:aspect-auto"
           >
-             <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1000" className="w-full h-full object-cover" alt="Retail" />
+             <img src={brand?.hero_image || "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1000"} className="w-full h-full object-cover" alt="Retail" />
           </motion.div>
         </div>
       </section>
@@ -90,7 +90,7 @@ export const RetailTemplate: React.FC<TemplateProps> = ({ client, page, pages })
             <p className="text-slate-500 text-sm md:text-base">Confira o que os moradores de {page?.location} dizem sobre nós.</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {[1, 2, 3].map(i => (
+            {(brand?.testimonials?.length > 0 ? brand.testimonials : [1, 2, 3]).map((test: any, i: number) => (
               <motion.div 
                 key={i}
                 initial={{ opacity: 0, y: 20 }}
@@ -99,10 +99,21 @@ export const RetailTemplate: React.FC<TemplateProps> = ({ client, page, pages })
                 className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm"
               >
                 <div className="flex text-yellow-400 mb-4 text-sm">★★★★★</div>
-                <p className="text-slate-600 mb-6 italic">"Sempre encontro tudo o que preciso com os melhores preços. O atendimento em {page?.location} é nota 10!"</p>
+                <p className="text-slate-600 mb-6 italic">
+                  {test.content || `"Sempre encontro tudo o que preciso com os melhores preços. O atendimento em ${page?.location} é nota 10!"`}
+                </p>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-slate-100" />
-                  <p className="font-bold text-xs uppercase tracking-widest text-slate-400">Cliente Local</p>
+                  {test.image_url ? (
+                    <img src={test.image_url} className="w-10 h-10 rounded-full object-cover border border-slate-100" alt={test.name} />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-[10px] text-slate-400 font-bold">
+                      {test.name ? test.name[0] : 'C'}
+                    </div>
+                  )}
+                  <div>
+                    <p className="font-bold text-xs uppercase tracking-widest text-slate-900">{test.name || 'Cliente Local'}</p>
+                    <p className="text-[10px] text-slate-400 uppercase font-black">{test.role || page?.location}</p>
+                  </div>
                 </div>
               </motion.div>
             ))}

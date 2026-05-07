@@ -72,7 +72,6 @@ export const LegalTemplate: React.FC<TemplateProps> = ({ client, page, pages }) 
         </section>
       )}
 
-      {/* Social Proof / Prestige */}
       <section className="py-24 md:py-40 px-4 md:px-10 bg-[#1e293b] text-white">
         <div className="max-w-7xl mx-auto">
            <div className="grid lg:grid-cols-2 gap-20 items-center">
@@ -81,16 +80,24 @@ export const LegalTemplate: React.FC<TemplateProps> = ({ client, page, pages }) 
                  <p className="text-lg md:text-xl text-slate-300 font-sans font-light leading-relaxed">Centenas de causas resolvidas com transparência e foco no cliente. Sua segurança jurídica é nossa prioridade.</p>
               </div>
               <div className="grid sm:grid-cols-2 gap-6 md:gap-10">
-                 {[1, 2, 3, 4].map(i => (
+                 {(brand?.testimonials?.length > 0 ? brand.testimonials : [1, 2, 3, 4]).map((test: any, i: number) => (
                     <motion.div 
                       key={i}
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
-                      className="p-8 md:p-10 bg-white/5 border border-white/10 rounded-2xl"
+                      transition={{ delay: i * 0.1 }}
+                      className="p-8 md:p-10 bg-white/5 border border-white/10 rounded-2xl flex flex-col items-center text-center"
                     >
-                       <p className="text-3xl md:text-4xl font-bold mb-2">+{i * 150}</p>
-                       <p className="text-[10px] md:text-xs uppercase font-black tracking-widest text-slate-400">Casos em {page?.location}</p>
+                       {test.image_url ? (
+                         <img src={test.image_url} className="w-16 h-16 rounded-full object-cover mb-4 border border-white/10" alt={test.name} />
+                       ) : (
+                         <div className="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/20 font-bold mb-4">
+                           {test.name ? test.name[0] : 'J'}
+                         </div>
+                       )}
+                       <p className="text-xs font-bold mb-2 uppercase tracking-widest text-slate-200">{test.name || 'Justiça'}</p>
+                       <p className="text-[10px] text-slate-400 uppercase tracking-tighter leading-tight italic">{test.content || 'Resultado favorável garantido.'}</p>
                     </motion.div>
                  ))}
               </div>

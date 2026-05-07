@@ -85,7 +85,7 @@ export const HealthTemplate: React.FC<TemplateProps> = ({ client, page, pages })
             className="relative"
           >
              <img 
-               src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=1000" 
+               src={brand?.hero_image || "https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=1000"} 
                alt="Médico" 
                className="relative rounded-[40px] shadow-2xl w-full aspect-square md:aspect-[4/3] object-cover"
              />
@@ -114,7 +114,7 @@ export const HealthTemplate: React.FC<TemplateProps> = ({ client, page, pages })
               <p className="text-slate-500 text-sm md:text-base">A confiança de nossos pacientes é o nosso maior patrimônio em {page?.location}.</p>
            </div>
            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[1, 2, 3].map(i => (
+              {(brand?.testimonials?.length > 0 ? brand.testimonials : [1, 2, 3]).map((test: any, i: number) => (
                 <motion.div 
                   key={i}
                   initial={{ opacity: 0, y: 20 }}
@@ -122,12 +122,20 @@ export const HealthTemplate: React.FC<TemplateProps> = ({ client, page, pages })
                   viewport={{ once: true }}
                   className="p-8 md:p-10 bg-slate-50 rounded-[40px] border border-slate-100"
                 >
-                  <p className="text-slate-600 mb-8 italic text-base md:text-lg leading-relaxed">"O atendimento foi excelente. Me senti acolhido desde a recepção até a consulta final. Recomendo muito o {client.name} em {page?.location}!"</p>
+                  <p className="text-slate-600 mb-8 italic text-base md:text-lg leading-relaxed">
+                    {test.content || `"O atendimento foi excelente. Me senti acolhido desde a recepção até a consulta final. Recomendo muito o ${client.name} em ${page?.location}!"`}
+                  </p>
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-sky-100 border border-sky-200" />
+                    {test.image_url ? (
+                      <img src={test.image_url} className="w-12 h-12 rounded-full object-cover border border-slate-200 shadow-sm" alt={test.name} />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-sky-50 border border-sky-100 flex items-center justify-center text-[10px] text-sky-600 font-bold">
+                        {test.name ? test.name[0] : 'P'}
+                      </div>
+                    )}
                     <div>
-                      <p className="font-bold text-slate-800 text-sm md:text-base">Paciente</p>
-                      <p className="text-[10px] md:text-xs text-slate-400 uppercase font-black tracking-widest">{page?.location}</p>
+                      <p className="font-bold text-slate-800 text-sm md:text-base">{test.name || 'Paciente'}</p>
+                      <p className="text-[10px] md:text-xs text-slate-400 uppercase font-black tracking-widest">{test.role || page?.location}</p>
                     </div>
                   </div>
                 </motion.div>

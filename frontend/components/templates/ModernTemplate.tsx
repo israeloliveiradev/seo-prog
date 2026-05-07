@@ -71,7 +71,7 @@ export const ModernTemplate: React.FC<TemplateProps> = ({ client, page, pages })
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl md:text-5xl font-black uppercase italic tracking-tighter mb-16 md:mb-20">O que dizem <br /><span className="text-indigo-500">nossos clientes</span></h2>
           <div className="grid md:grid-cols-3 gap-6 md:gap-10">
-            {[1, 2, 3].map((i) => (
+            {(brand?.testimonials?.length > 0 ? brand.testimonials : [1, 2, 3]).map((test: any, i: number) => (
               <motion.div 
                 key={i}
                 initial={{ opacity: 0, y: 20 }}
@@ -83,12 +83,20 @@ export const ModernTemplate: React.FC<TemplateProps> = ({ client, page, pages })
                 <div className="flex gap-1 mb-6">
                   {[1,2,3,4,5].map(s => <span key={s} className="text-indigo-500 text-sm md:text-base">★</span>)}
                 </div>
-                <p className="text-base md:text-lg text-white/70 italic mb-8">"Serviço impecável em {page?.location || 'nossa região'}. A equipe do {client.name} superou todas as expectativas!"</p>
+                <p className="text-base md:text-lg text-white/70 italic mb-8">
+                  {test.content || `"Serviço impecável em ${page?.location || 'nossa região'}. A equipe do ${client.name} superou todas as expectativas!"`}
+                </p>
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-indigo-500/20 border border-indigo-500/30" />
+                  {test.image_url ? (
+                    <img src={test.image_url} className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover border border-indigo-500/30" alt={test.name} />
+                  ) : (
+                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-[10px] text-indigo-400 font-bold">
+                      {test.name ? test.name[0] : 'C'}
+                    </div>
+                  )}
                   <div>
-                    <p className="text-xs md:text-sm font-black uppercase italic">Cliente Satisfeito</p>
-                    <p className="text-[10px] md:text-xs text-white/30 font-bold uppercase tracking-widest">{page?.location}</p>
+                    <p className="text-xs md:text-sm font-black uppercase italic">{test.name || 'Cliente Satisfeito'}</p>
+                    <p className="text-[10px] md:text-xs text-white/30 font-bold uppercase tracking-widest">{test.role || page?.location}</p>
                   </div>
                 </div>
               </motion.div>

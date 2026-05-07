@@ -40,31 +40,37 @@ export const FoodTemplate: React.FC<TemplateProps> = ({ client, page, pages }) =
       </motion.header>
 
       {/* Hero */}
-      <section className="relative py-12 md:py-40 px-4 md:px-8 overflow-hidden">
+      <section className="relative py-12 md:py-40 px-4 md:px-8 overflow-hidden bg-stone-900">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-10 md:gap-16 items-center">
            <motion.div 
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             className="space-y-6 md:space-y-10"
-           >
-              <h1 className="text-5xl md:text-9xl font-black uppercase italic tracking-tighter leading-[0.8] text-stone-900">
-                A Arte da <br />
-                <span className="text-orange-600">Boa Mesa</span>
-              </h1>
-              <p className="text-lg md:text-xl text-stone-500 font-light leading-relaxed max-w-lg italic">
-                {brand?.description || page?.meta_description || 'Sabor inigualável e ingredientes selecionados. Viva uma experiência gastronômica única conosco em nossa região.'}
-              </p>
-           </motion.div>
-           <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+          >
+             <h1 className="text-5xl md:text-8xl font-black uppercase italic tracking-tighter leading-[0.8] text-white">
+                O Sabor <br />
+                <span className="text-orange-500">Autêntico</span> <br />
+                <span className="text-white/20 not-italic text-2xl md:text-4xl tracking-normal">em {page?.location}</span>
+             </h1>
+             <p className="text-lg md:text-xl text-white/40 font-light leading-relaxed max-w-lg">
+                {brand?.description || page?.meta_description || 'Descubra a melhor experiência gastronômica da região. Ingredientes frescos e paixão em cada prato.'}
+             </p>
+             <button className="w-full md:w-auto px-10 py-5 bg-orange-500 text-white font-black uppercase tracking-widest text-xs rounded-full hover:bg-orange-600 transition-all shadow-2xl shadow-orange-500/20 active:scale-95">Ver Cardápio</button>
+          </motion.div>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.8, rotate: 5 }}
+            whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 1 }}
             className="relative"
-           >
-              <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1000" className="rounded-3xl md:rounded-[60px] shadow-2xl aspect-square object-cover" alt="Food" />
-           </motion.div>
+          >
+             <div className="absolute inset-0 bg-orange-500 rounded-full blur-[100px] opacity-20" />
+             <img 
+               src={brand?.hero_image || "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1000"} 
+               className="relative rounded-[40px] md:rounded-[80px] shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-700 w-full aspect-square object-cover" 
+               alt="Food" 
+             />
+          </motion.div>
         </div>
       </section>
 
@@ -78,30 +84,40 @@ export const FoodTemplate: React.FC<TemplateProps> = ({ client, page, pages }) =
       )}
 
       {/* Social Proof / Appetite */}
-      <section className="py-20 md:py-32 bg-[#fffcf5] border-y border-stone-200">
+      <section className="py-20 md:py-32 bg-stone-900 border-y border-stone-800">
         <div className="max-w-7xl mx-auto px-4">
            <div className="text-center mb-16 md:mb-24">
-              <h2 className="text-3xl md:text-6xl font-black uppercase italic tracking-tighter text-stone-900 mb-4 md:mb-6 leading-none">Quem provou, <br /><span className="text-orange-600">amou!</span></h2>
-              <p className="text-stone-500 font-medium italic">Confira as experiências em {page?.location}</p>
+              <h2 className="text-3xl md:text-6xl font-black uppercase italic tracking-tighter text-white mb-4 md:mb-6 leading-none">Quem provou, <br /><span className="text-orange-600">amou!</span></h2>
+              <p className="text-white/40 font-medium italic">Confira as experiências em {page?.location}</p>
            </div>
-           <div className="grid md:grid-cols-3 gap-8">
-              {[1, 2, 3].map(i => (
-                <motion.div 
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  className="p-8 md:p-10 bg-white rounded-[40px] shadow-sm border border-stone-100"
-                >
-                  <p className="text-3xl text-orange-600 mb-6 font-black italic">"Sensacional"</p>
-                  <p className="text-stone-600 mb-8 italic text-base md:text-lg">"Melhor comida de {page?.location}. O tempero é caseiro e o atendimento é impecável. Pedimos toda semana!"</p>
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-orange-100" />
-                    <p className="text-xs font-black uppercase tracking-widest text-stone-400">Cliente Fiel</p>
+           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {(brand?.testimonials?.length > 0 ? brand.testimonials : [1, 2, 3]).map((test: any, i: number) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="p-10 bg-white/5 border border-white/5 rounded-[40px] hover:border-orange-500/30 transition-all"
+              >
+                <p className="text-white/70 italic text-lg mb-8">
+                  {test.content || `"Simplesmente a melhor comida de ${page?.location}. O tempero é único e o ambiente é maravilhoso!"`}
+                </p>
+                <div className="flex items-center gap-4">
+                  {test.image_url ? (
+                    <img src={test.image_url} className="w-12 h-12 rounded-full object-cover border border-orange-500/30 shadow-lg shadow-orange-500/10" alt={test.name} />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-[10px] text-orange-400 font-bold">
+                      {test.name ? test.name[0] : 'G'}
+                    </div>
+                  )}
+                  <div>
+                    <p className="text-sm font-black uppercase italic text-white">{test.name || 'Gourmet'}</p>
+                    <p className="text-[10px] font-bold text-orange-500 uppercase tracking-widest">{test.role || page?.location}</p>
                   </div>
-                </motion.div>
-              ))}
-           </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 

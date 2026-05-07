@@ -71,17 +71,18 @@ html {
   color: inherit;
 }
 
-/* Ajustes para templates escuros */
-.bg-black .prose-seo, .bg-[#050508] .prose-seo, .bg-[#111111] .prose-seo {
-  color: rgba(255, 255, 255, 0.8);
+/* Adaptabilidade para temas claros e escuros */
+.bg-black .prose-seo, .dark-theme .prose-seo {
+    color: rgba(255, 255, 255, 0.8);
 }
-.bg-black .prose-seo h2, .bg-black .prose-seo h3 { color: #fff; }
 
-/* Ajustes para templates claros */
-.bg-white .prose-seo, .bg-[#f8f5f0] .prose-seo, .bg-[#fffcf5] .prose-seo {
-  color: #334155;
+.bg-white .prose-seo, .light-theme .prose-seo {
+    color: #334155;
 }
-.bg-white .prose-seo h2, .bg-white .prose-seo h3 { color: #0f172a; }
+
+.dark-theme .prose-seo h2, .dark-theme .prose-seo h3 { color: #fff; }
+
+.light-theme .prose-seo h2, .light-theme .prose-seo h3 { color: #0f172a; }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }

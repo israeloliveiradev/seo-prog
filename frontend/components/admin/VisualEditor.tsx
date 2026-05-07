@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import Link from 'next/link';
 
 interface VisualEditorProps {
   client: any;
@@ -10,6 +11,7 @@ interface VisualEditorProps {
 export const VisualEditor: React.FC<VisualEditorProps> = ({ client, onSave }) => {
   const [template, setTemplate] = useState(client.template_id || 'minimalist');
   const [brand, setBrand] = useState(client.brand_settings || {});
+  const [customDomain, setCustomDomain] = useState(client.custom_domain || '');
   const [saving, setSaving] = useState(false);
 
   const templates = [
@@ -47,24 +49,62 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ client, onSave }) =>
     }
   };
 
+  const addTestimonial = () => {
+    const newTestimonials = [...(brand.testimonials || []), { name: '', role: '', content: '', image_url: '' }];
+    handleChange('testimonials', newTestimonials);
+  };
+
+  const updateTestimonial = (index: number, field: string, value: string) => {
+    const newTestimonials = [...(brand.testimonials || [])];
+    newTestimonials[index] = { ...newTestimonials[index], [field]: value };
+    handleChange('testimonials', newTestimonials);
+  };
+
+  const removeTestimonial = (index: number) => {
+    const newTestimonials = brand.testimonials.filter((_: any, i: number) => i !== index);
+    handleChange('testimonials', newTestimonials);
+  };
+
   const handleSave = async () => {
     setSaving(true);
     try {
-      await onSave({ ...client, template_id: template, brand_settings: brand });
+      await onSave({ ...client, template_id: template, brand_settings: brand, custom_domain: customDomain });
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <div className="space-y-12 pb-20 animate-fadeIn">
+    <div className="space-y-16 pb-32 animate-fadeIn">
+      {/* Top Section: Domain & Navigation */}
+      <section className="p-8 rounded-3xl bg-indigo-500/5 border border-indigo-500/10 flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="w-full md:w-auto">
+          <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400 block mb-2">Domínio Customizado</label>
+          <input 
+            type="text" 
+            value={customDomain} 
+            onChange={(e) => setCustomDomain(e.target.value)}
+            className="w-full md:w-80 bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none"
+            placeholder="www.exemplo.com.br"
+          />
+        </div>
+        <div className="flex gap-4">
+           <Link 
+            href={`/admin/clients/${client.id}/pages`}
+            className="px-6 py-3 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all"
+           >
+             📝 Editar Páginas Individuais
+           </Link>
+        </div>
+      </section>
+
       {/* Seleção de Template */}
       <section>
-        <h3 className="text-lg font-bold mb-6 flex items-center gap-3">
+        <h3 className="text-xl font-black uppercase italic mb-8 flex items-center gap-3">
           <span className="w-1.5 h-6 bg-indigo-500 rounded-full" />
-          Layout do Site (Templates)
+          Layout do Site
         </h3>
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
           {templates.map((t) => (
             <div 
               key={t.id}
@@ -73,14 +113,13 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ client, onSave }) =>
                 template === t.id ? 'border-indigo-500 ring-4 ring-indigo-500/10' : 'border-white/5 hover:border-white/20'
               }`}
             >
-              <img src={t.thumb} alt={t.name} className="w-full h-40 object-cover opacity-50 group-hover:opacity-80 transition-opacity" />
-              <div className="p-4 bg-[#0d0d16]">
-                 <p className="font-bold uppercase tracking-tight">{t.name}</p>
-                 <p className="text-xs text-white/40 mt-1">{t.desc}</p>
+              <img src={t.thumb} alt={t.name} className="w-full h-32 object-cover opacity-40 group-hover:opacity-100 transition-all" />
+              <div className="p-4 bg-black/60 absolute inset-0 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                 <p className="font-bold uppercase tracking-tight text-[10px]">{t.name}</p>
               </div>
               {template === t.id && (
-                <div className="absolute top-3 right-3 bg-indigo-500 text-white p-1 rounded-full shadow-xl">
-                  <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+                <div className="absolute top-2 right-2 bg-indigo-500 text-white p-1 rounded-full">
+                  <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
@@ -90,45 +129,97 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ client, onSave }) =>
         </div>
       </section>
 
-      {/* Controles de Recursos (Toggles) */}
-      <section className="p-8 rounded-3xl bg-white/[0.02] border border-white/5">
-        <h3 className="text-lg font-bold mb-8">Componentes Visuais</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {[
-            { id: 'show_maps', label: 'Google Maps' },
-            { id: 'show_faq', label: 'Perguntas Frequentes' },
-            { id: 'show_reviews', label: 'Depoimentos' },
-            { id: 'show_gallery', label: 'Galeria de Fotos' },
-          ].map((f) => (
-            <div key={f.id} className="flex items-center justify-between p-4 rounded-xl bg-black/20 border border-white/5">
-              <span className="text-xs font-bold uppercase tracking-widest text-white/60">{f.label}</span>
-              <button 
-                onClick={() => handleToggle(f.id)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  brand.features_enabled?.[f.id] ? 'bg-indigo-500' : 'bg-white/10'
-                }`}
-              >
-                <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                  brand.features_enabled?.[f.id] ? 'translate-x-6' : 'translate-x-1'
-                }`} />
-              </button>
+      {/* Prova Social Customizada */}
+      <section className="space-y-8">
+        <div className="flex justify-between items-end">
+           <h3 className="text-xl font-black uppercase italic flex items-center gap-3">
+            <span className="w-1.5 h-6 bg-green-500 rounded-full" />
+            Depoimentos Reais
+          </h3>
+          <button 
+            onClick={addTestimonial}
+            className="text-[10px] font-black uppercase tracking-widest text-indigo-400 hover:text-indigo-300"
+          >
+            + Adicionar Depoimento
+          </button>
+        </div>
+        
+        <div className="grid md:grid-cols-2 gap-6">
+          {(brand.testimonials || []).map((test: any, idx: number) => (
+            <div key={idx} className="p-8 rounded-3xl bg-white/[0.02] border border-white/5 space-y-4 relative group">
+               <button 
+                onClick={() => removeTestimonial(idx)}
+                className="absolute top-4 right-4 text-white/10 hover:text-red-500 transition-colors"
+               >
+                 <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 18L18 6M6 6l12 12" /></svg>
+               </button>
+               <div className="grid grid-cols-[80px_1fr] gap-4">
+                  <div className="space-y-2">
+                    <label className="text-[8px] font-black uppercase text-white/20">Foto URL</label>
+                    <div className="w-20 h-20 rounded-2xl bg-black/40 border border-white/10 overflow-hidden relative">
+                      {test.image_url ? (
+                        <img src={test.image_url} className="w-full h-full object-cover" alt="Avatar" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-white/10 text-xs italic">IMG</div>
+                      )}
+                    </div>
+                    <input 
+                      type="text" 
+                      value={test.image_url} 
+                      onChange={(e) => updateTestimonial(idx, 'image_url', e.target.value)}
+                      className="w-full bg-black/40 border border-white/10 rounded-lg px-2 py-1 text-[8px] outline-none"
+                      placeholder="URL..."
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-[8px] font-black uppercase text-white/20">Nome</label>
+                      <input 
+                        type="text" 
+                        value={test.name} 
+                        onChange={(e) => updateTestimonial(idx, 'name', e.target.value)}
+                        className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-xs outline-none"
+                        placeholder="Ex: Maria Souza"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[8px] font-black uppercase text-white/20">Cargo/Localidade</label>
+                      <input 
+                        type="text" 
+                        value={test.role} 
+                        onChange={(e) => updateTestimonial(idx, 'role', e.target.value)}
+                        className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-xs outline-none"
+                        placeholder="Ex: Cliente em São Paulo"
+                      />
+                    </div>
+                  </div>
+               </div>
+               <div>
+                  <label className="text-[8px] font-black uppercase text-white/20">Depoimento</label>
+                  <textarea 
+                    value={test.content} 
+                    onChange={(e) => updateTestimonial(idx, 'content', e.target.value)}
+                    className="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-xs outline-none h-20"
+                    placeholder="O que o cliente disse..."
+                  />
+               </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Dados Ricos */}
+      {/* Identidade Visual & Carrossel */}
       <section className="grid lg:grid-cols-2 gap-8">
         <div className="space-y-6 p-8 rounded-3xl bg-white/[0.02] border border-white/5">
-           <h3 className="text-lg font-bold">Informações de Contato</h3>
+           <h3 className="text-xl font-black uppercase italic mb-6">Contatos & Mapas</h3>
            <div className="space-y-4">
               <div>
-                <label className="text-[10px] font-black uppercase tracking-widest text-white/40 block mb-2">WhatsApp de Vendas</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-white/40 block mb-2">WhatsApp (Com DDI)</label>
                 <input 
                   type="text" 
                   value={brand.contact_whatsapp || ''} 
                   onChange={(e) => handleChange('contact_whatsapp', e.target.value)}
-                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none transition-all"
+                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none"
                   placeholder="5511999999999"
                 />
               </div>
@@ -138,80 +229,48 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ client, onSave }) =>
                   type="text" 
                   value={brand.address || ''} 
                   onChange={(e) => handleChange('address', e.target.value)}
-                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none transition-all"
-                  placeholder="Av. Paulista, 1000 - SP"
-                />
-              </div>
-              <div>
-                <label className="text-[10px] font-black uppercase tracking-widest text-white/40 block mb-2">Descrição Curta da Empresa</label>
-                <textarea 
-                  value={brand.description || ''} 
-                  onChange={(e) => handleChange('description', e.target.value)}
-                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none transition-all h-24"
-                  placeholder="Ex: Especialistas em climatização residencial..."
-                />
-              </div>
-              <div>
-                <label className="text-[10px] font-black uppercase tracking-widest text-white/40 block mb-2">Google Maps (URL de Embed)</label>
-                <input 
-                  type="text" 
-                  value={brand.google_maps_embed || ''} 
-                  onChange={(e) => handleChange('google_maps_embed', e.target.value)}
-                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none transition-all"
-                  placeholder="https://www.google.com/maps/embed?..."
+                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none"
+                  placeholder="Rua Exemplo, 123 - SP"
                 />
               </div>
            </div>
         </div>
 
         <div className="space-y-6 p-8 rounded-3xl bg-white/[0.02] border border-white/5">
-           <h3 className="text-lg font-bold">Identidade & Mídia</h3>
-           <div className="space-y-4">
+           <h3 className="text-xl font-black uppercase italic mb-6">Identidade</h3>
+           <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-[10px] font-black uppercase tracking-widest text-white/40 block mb-2">Hero Image (URL)</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-white/40 block mb-2">Cor Primária</label>
                 <input 
-                  type="text" 
-                  value={brand.hero_image || ''} 
-                  onChange={(e) => handleChange('hero_image', e.target.value)}
-                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none transition-all"
-                  placeholder="https://imagem.com/foto.jpg"
+                  type="color" 
+                  value={brand.primary_color || '#6366f1'} 
+                  onChange={(e) => handleChange('primary_color', e.target.value)}
+                  className="w-full h-12 bg-black/40 border border-white/10 rounded-xl cursor-pointer"
                 />
               </div>
               <div>
-                <label className="text-[10px] font-black uppercase tracking-widest text-white/40 block mb-2">Estilo de Tipografia (Google Fonts)</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-white/40 block mb-2">Google Font</label>
                 <select 
                   value={brand.font_family || 'Inter'} 
                   onChange={(e) => handleChange('font_family', e.target.value)}
-                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none transition-all cursor-pointer"
+                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none h-12"
                 >
-                  <option value="Inter">Inter (Padrão Moderno)</option>
-                  <option value="Outfit">Outfit (Minimalista/Agência)</option>
-                  <option value="Playfair Display">Playfair Display (Luxo/Jurídico)</option>
-                  <option value="Montserrat">Montserrat (Impactante/Varejo)</option>
-                  <option value="Roboto">Roboto (Limpo/Corporativo)</option>
-                  <option value="Plus Jakarta Sans">Jakarta (Trendy/Tech)</option>
+                  <option value="Inter">Inter</option>
+                  <option value="Outfit">Outfit</option>
+                  <option value="Montserrat">Montserrat</option>
+                  <option value="Playfair Display">Playfair</option>
                 </select>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                 <div>
-                    <label className="text-[10px] font-black uppercase tracking-widest text-white/40 block mb-2">Cor Primária</label>
-                    <input 
-                      type="color" 
-                      value={brand.primary_color || '#6366f1'} 
-                      onChange={(e) => handleChange('primary_color', e.target.value)}
-                      className="w-full h-12 bg-black/40 border border-white/10 rounded-xl cursor-pointer"
-                    />
-                 </div>
-                 <div>
-                    <label className="text-[10px] font-black uppercase tracking-widest text-white/40 block mb-2">Instagram (URL)</label>
-                    <input 
-                      type="text" 
-                      value={brand.social_links?.instagram || ''} 
-                      onChange={(e) => handleChange('social_links.instagram', e.target.value)}
-                      className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none transition-all"
-                    />
-                 </div>
-              </div>
+           </div>
+           <div>
+              <label className="text-[10px] font-black uppercase tracking-widest text-white/40 block mb-2">Imagem de Fundo (Hero)</label>
+              <input 
+                type="text" 
+                value={brand.hero_image || ''} 
+                onChange={(e) => handleChange('hero_image', e.target.value)}
+                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none"
+                placeholder="https://images.unsplash.com/..."
+              />
            </div>
         </div>
       </section>
@@ -221,11 +280,11 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ client, onSave }) =>
         <button 
           onClick={handleSave}
           disabled={saving}
-          className={`px-12 py-4 rounded-xl font-black uppercase tracking-[0.2em] text-xs transition-all ${
-            saving ? 'bg-white/10 text-white/20' : 'bg-indigo-500 text-white hover:bg-indigo-400 hover:scale-105 shadow-xl shadow-indigo-500/20'
+          className={`px-12 py-5 rounded-2xl font-black uppercase tracking-[0.2em] text-xs transition-all ${
+            saving ? 'bg-white/10 text-white/20' : 'bg-indigo-500 text-white hover:bg-indigo-400 hover:scale-105 shadow-2xl shadow-indigo-500/30'
           }`}
         >
-          {saving ? 'Gravando Alterações...' : 'Salvar Design do Site'}
+          {saving ? 'Publicando Alterações...' : 'Atualizar Site Completo'}
         </button>
       </div>
     </div>
