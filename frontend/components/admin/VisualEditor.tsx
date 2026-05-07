@@ -14,7 +14,15 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ client, onSave }) =>
 
   const templates = [
     { id: 'minimalist', name: 'Industrial Minimalist', desc: 'Dark, raw, high-impact typography.', thumb: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=400' },
-    { id: 'modern', name: 'Modern Conversion', desc: 'Clean, light, focused on sales and images.', thumb: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=400' },
+    { id: 'modern', name: 'Modern Conversion', desc: 'Clean, light, focused on sales.', thumb: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=400' },
+    { id: 'retail', name: 'Retail / Supermarket', desc: 'Offer-focused, product grids.', thumb: 'https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=400' },
+    { id: 'creative', name: 'Creative Agency', desc: 'Bold, gradients, portfolio style.', thumb: 'https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=400' },
+    { id: 'health', name: 'Health / Medical', desc: 'Clean, trustworthy, professional.', thumb: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=400' },
+    { id: 'legal', name: 'Legal / Professional', desc: 'Sober, luxurious, authoritative.', thumb: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?q=80&w=400' },
+    { id: 'realestate', name: 'Real Estate / Luxury', desc: 'Big photos, elegant tones.', thumb: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=400' },
+    { id: 'automotive', name: 'Automotive / Speed', desc: 'Robust, fast, industrial.', thumb: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?q=80&w=400' },
+    { id: 'education', name: 'Education / School', desc: 'Clear, modules, sign-up focus.', thumb: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=400' },
+    { id: 'food', name: 'Food / Restaurant', desc: 'Appetizing, menu-focused.', thumb: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=400' },
   ];
 
   const handleToggle = (feature: string) => {
@@ -168,6 +176,21 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ client, onSave }) =>
                   className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none transition-all"
                   placeholder="https://imagem.com/foto.jpg"
                 />
+              </div>
+              <div>
+                <label className="text-[10px] font-black uppercase tracking-widest text-white/40 block mb-2">Estilo de Tipografia (Google Fonts)</label>
+                <select 
+                  value={brand.font_family || 'Inter'} 
+                  onChange={(e) => handleChange('font_family', e.target.value)}
+                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none transition-all cursor-pointer"
+                >
+                  <option value="Inter">Inter (Padrão Moderno)</option>
+                  <option value="Outfit">Outfit (Minimalista/Agência)</option>
+                  <option value="Playfair Display">Playfair Display (Luxo/Jurídico)</option>
+                  <option value="Montserrat">Montserrat (Impactante/Varejo)</option>
+                  <option value="Roboto">Roboto (Limpo/Corporativo)</option>
+                  <option value="Plus Jakarta Sans">Jakarta (Trendy/Tech)</option>
+                </select>
               </div>
               <div className="grid grid-cols-2 gap-4">
                  <div>
