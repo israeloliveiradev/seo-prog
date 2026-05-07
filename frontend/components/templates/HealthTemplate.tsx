@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import { GoogleFontsLoader } from './GoogleFontsLoader';
@@ -52,7 +54,12 @@ export const HealthTemplate: React.FC<TemplateProps> = ({ client, page, pages })
       <section className="relative py-20 lg:py-32 overflow-hidden">
         <div className="absolute top-0 right-0 w-1/2 h-full bg-slate-50 -z-10 rounded-l-[100px] hidden lg:block" />
         <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-20 items-center">
-          <div className="space-y-8">
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="space-y-8"
+          >
              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-50 text-sky-600 border border-sky-100">
                 <span className="w-2 h-2 rounded-full bg-sky-500 animate-pulse" />
                 <span className="text-[10px] font-bold uppercase tracking-widest">Excelência em Saúde</span>
@@ -66,11 +73,17 @@ export const HealthTemplate: React.FC<TemplateProps> = ({ client, page, pages })
              </p>
              <div className="flex flex-col sm:flex-row gap-4">
                 <button className="px-10 py-5 bg-sky-500 text-white font-bold rounded-2xl hover:bg-sky-600 transition-all shadow-2xl shadow-sky-500/20">
-                  Nossas Especialidades
+                   Nossas Especialidades
                 </button>
              </div>
-          </div>
-          <div className="relative">
+          </motion.div>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1 }}
+            className="relative"
+          >
              <div className="absolute -inset-4 bg-sky-500/5 blur-3xl rounded-full" />
              <img 
                src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=1000&auto=format&fit=crop" 
@@ -81,7 +94,7 @@ export const HealthTemplate: React.FC<TemplateProps> = ({ client, page, pages })
                 <p className="text-4xl font-serif text-sky-600 mb-1">98%</p>
                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Pacientes Satisfeitos</p>
              </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -94,10 +107,14 @@ export const HealthTemplate: React.FC<TemplateProps> = ({ client, page, pages })
                <p className="text-slate-500">Corpo clínico qualificado para atender todas as suas necessidades de saúde.</p>
             </div>
             <div className="grid md:grid-cols-3 gap-8">
-              {pages.map((p) => (
-                <a 
+              {pages.map((p, i) => (
+                <motion.a 
                   key={p.id} 
                   href={`/${p.slug}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
                   className="group p-10 bg-white rounded-[40px] border border-slate-100 hover:border-sky-200 transition-all shadow-sm hover:shadow-2xl"
                 >
                   <div className="w-14 h-14 rounded-2xl bg-sky-50 mb-8 flex items-center justify-center group-hover:bg-sky-500 group-hover:text-white transition-all">
@@ -108,7 +125,7 @@ export const HealthTemplate: React.FC<TemplateProps> = ({ client, page, pages })
                   <span className="text-[10px] font-black uppercase tracking-widest text-sky-600 flex items-center gap-2">
                     Saiba Mais <span className="translate-x-0 group-hover:translate-x-2 transition-transform">→</span>
                   </span>
-                </a>
+                </motion.a>
               ))}
             </div>
           </div>
@@ -117,19 +134,19 @@ export const HealthTemplate: React.FC<TemplateProps> = ({ client, page, pages })
 
       {/* Footer Saúde */}
       <footer className="bg-white border-t border-slate-100 py-24">
-         <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-4 gap-12">
+         <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-4 gap-12 text-center lg:text-left">
             <div className="col-span-2 space-y-8">
-               <div className="flex items-center gap-3">
+               <div className="flex items-center gap-3 justify-center lg:justify-start">
                   <div className="w-8 h-8 rounded-lg bg-sky-500 flex items-center justify-center text-white">✚</div>
                   <span className="text-xl font-bold uppercase">{client.name}</span>
                </div>
-               <p className="text-slate-400 max-w-md">Promovendo saúde e qualidade de vida com responsabilidade social e excelência técnica.</p>
+               <p className="text-slate-400 max-w-md mx-auto lg:mx-0">Promovendo saúde e qualidade de vida com responsabilidade social e excelência técnica.</p>
             </div>
             <div className="space-y-6">
                <h4 className="text-xs font-black uppercase tracking-widest text-slate-300">Unidade</h4>
                <p className="text-sm font-medium leading-relaxed">{brand?.address || 'Localização centralizada para seu conforto.'}</p>
             </div>
-            <div className="space-y-6 text-right">
+            <div className="space-y-6 text-center lg:text-right">
                <h4 className="text-xs font-black uppercase tracking-widest text-slate-300">Contato 24h</h4>
                <p className="text-2xl font-serif text-slate-900">{brand?.contact_whatsapp}</p>
             </div>

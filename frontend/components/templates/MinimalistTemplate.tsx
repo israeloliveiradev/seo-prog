@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import { GoogleFontsLoader } from './GoogleFontsLoader';
@@ -89,7 +91,7 @@ export const MinimalistTemplate: React.FC<TemplateProps> = ({ client, page, page
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             {pages.map((p, i) => (
               <motion.a 
-                key={p.id}
+                key={p.id} 
                 href={`/${p.slug}`}
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
