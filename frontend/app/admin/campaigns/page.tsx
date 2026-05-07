@@ -49,22 +49,48 @@ export default function OperationsPage() {
     }
   };
 
+  const handleRegenerate = async (id: string) => {
+    if (!confirm('Deseja realmente apagar todo o conteúdo atual e regenerar tudo com IA?')) return;
+    try {
+      const res = await fetch(`/api/admin/campaigns/regenerate?id=${id}`, {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer authenticated' }
+      });
+      if (res.ok) alert('🚀 Processamento reiniciado! O robô vai começar a reescrever as páginas.');
+      else alert('Erro ao solicitar regeneração.');
+    } catch (err) {
+      alert('Erro na conexão.');
+    }
+  };
+
   return (
     <div className="space-y-10 animate-fadeIn">
       {/* Lista de Campanhas Ativas */}
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {campaigns.map(camp => (
-          <div key={camp.id} className="p-6 rounded-2xl border border-white/5 bg-white/[0.01] hover:border-white/10 transition-all relative group">
+          <div key={camp.id} className="p-6 rounded-2xl border border-white/5 bg-white/[0.01] hover:border-white/10 transition-all relative group overflow-hidden">
+             {/* Efeito de brilho no hover */}
+             <div className="absolute inset-0 bg-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+             
              <button 
                 onClick={() => handleDeleteCampaign(camp.id)}
-                className="absolute top-4 right-4 w-6 h-6 rounded bg-red-500/10 text-red-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white text-[10px]"
+                className="absolute top-4 right-4 w-6 h-6 rounded bg-red-500/10 text-red-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white text-[10px] z-10"
              >
                 ✕
              </button>
              <p className="text-[10px] font-black text-indigo-400/60 uppercase tracking-widest mb-1">{(camp as any).clients?.name || 'Cliente'}</p>
-             <h4 className="font-bold text-white mb-4 uppercase tracking-tighter italic">{camp.name}</h4>
-             <div className="flex gap-2">
-                <span className="px-2 py-1 bg-white/5 rounded text-[8px] font-bold text-white/40">AUD: {camp.target_audience}</span>
+             <h4 className="font-bold text-white mb-6 uppercase tracking-tighter italic text-xl">{camp.name}</h4>
+             
+             <div className="flex flex-col gap-3 relative z-10">
+                <div className="flex gap-2">
+                   <span className="px-2 py-1 bg-white/5 rounded text-[8px] font-bold text-white/40 uppercase tracking-tighter">Audiência: {camp.target_audience}</span>
+                </div>
+                <button 
+                  onClick={() => handleRegenerate(camp.id)}
+                  className="w-full py-3 bg-white/5 border border-white/10 rounded-xl text-[9px] font-black uppercase tracking-widest text-indigo-400 hover:bg-indigo-500 hover:text-white transition-all shadow-xl"
+                >
+                  Regenerar Tudo (IA)
+                </button>
              </div>
           </div>
         ))}

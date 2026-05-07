@@ -50,9 +50,21 @@ export async function POST(req: NextRequest) {
     const { locations, serviceName, campaignId } = parsed.data;
     const supabase = createServiceClient();
 
-    // Prepara registros para inserção com slugs únicos
+    // Busca o client_id vinculado a esta campanha
+    const { data: campaign } = await supabase
+      .from('campaigns')
+      .select('client_id')
+      .eq('id', campaignId)
+      .single();
+
+    if (!campaign) {
+      return NextResponse.json({ error: 'Campanha não encontrada' }, { status: 404 });
+    }
+
+    // Prepara registros para inserção com slugs únicos e VINCULADOS ao cliente
     const pages = locations.map((location) => ({
       campaign_id: campaignId,
+      client_id: campaign.client_id,
       service_name: serviceName,
       location: location.trim(),
       slug: generateSlug(location.trim(), serviceName),
@@ -60,12 +72,11 @@ export async function POST(req: NextRequest) {
       attempts: 0,
     }));
 
-    // Upsert idempotente: slugs duplicados são ignorados
+    // Upsert: slugs duplicados são atualizados (garante integridade do client_id)
     const { data, error } = await supabase
       .from('generated_pages')
       .upsert(pages, {
         onConflict: 'slug',
-        ignoreDuplicates: true,
       })
       .select('id');
 

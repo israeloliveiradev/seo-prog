@@ -16,11 +16,27 @@ CREATE TABLE IF NOT EXISTS clients (
   name TEXT NOT NULL,
   subdomain TEXT UNIQUE NOT NULL,
   custom_domain TEXT UNIQUE,
+  template_id TEXT DEFAULT 'minimalist', -- 'minimalist', 'conversion', 'local'
   brand_settings JSONB DEFAULT '{
-    "primary_color": "#000000",
-    "logo_url": null,
     "company_name": "New Client",
-    "contact_whatsapp": ""
+    "primary_color": "#6366f1",
+    "secondary_color": "#000000",
+    "logo_url": null,
+    "hero_image": null,
+    "contact_whatsapp": "",
+    "address": "",
+    "google_maps_embed": "",
+    "social_links": {
+      "instagram": "",
+      "facebook": "",
+      "linkedin": ""
+    },
+    "features_enabled": {
+      "show_maps": true,
+      "show_faq": true,
+      "show_reviews": true,
+      "show_gallery": false
+    }
   }'::jsonb,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
