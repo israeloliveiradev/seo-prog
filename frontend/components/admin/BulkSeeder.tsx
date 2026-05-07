@@ -66,11 +66,11 @@ export default function BulkSeeder() {
   const locations = locationsText.split('\n').filter(loc => loc.trim());
 
   return (
-    <div className="space-y-8 animate-fadeIn">
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-8">
+    <div className="space-y-8 animate-fadeIn pb-20">
+      <div className="grid grid-cols-1 xl:grid-cols-[1fr_400px] gap-8">
         {/* Painel de Entrada */}
         <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
              <div className="group relative">
                 <label className="text-[10px] font-black text-indigo-400/60 uppercase tracking-[0.2em] ml-1 mb-2 block">Campanha Alvo</label>
                 <select 

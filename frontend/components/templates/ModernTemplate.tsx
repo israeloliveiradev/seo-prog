@@ -13,167 +13,136 @@ interface TemplateProps {
 export const ModernTemplate: React.FC<TemplateProps> = ({ client, page, pages }) => {
   const brand = client.brand_settings;
   const primaryColor = brand?.primary_color || '#6366f1';
-  const features = brand?.features_enabled || {};
   const fontFamily = brand?.font_family || 'Inter';
 
-  const fadeInUp = {
-    initial: { opacity: 0, y: 20 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true },
-    transition: { duration: 0.6 }
-  };
+  // Fallback para mapa se não houver endereço
+  const mapAddress = brand?.address || 'São Paulo, Brasil';
+  const mapUrl = `https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=${encodeURIComponent(mapAddress)}`;
+  // Como não temos a KEY agora, usaremos um embed sem KEY (modo busca) que funciona para demonstração
+  const publicMapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(mapAddress)}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-indigo-100 overflow-x-hidden">
+    <div className="min-h-screen bg-black text-white font-sans selection:bg-indigo-500/30 overflow-x-hidden">
       <GoogleFontsLoader fontFamily={fontFamily} />
       
-      {/* Navbar Animada */}
-      <motion.nav 
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100 px-6 py-4"
-      >
+      {/* Navbar */}
+      <nav className="fixed top-0 w-full z-50 bg-black/50 backdrop-blur-xl border-b border-white/5 px-4 md:px-10 py-5">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            {brand?.logo_url ? (
-              <img src={brand.logo_url} alt={client.name} className="h-8 object-contain" />
-            ) : (
-              <span className="text-xl font-bold tracking-tight text-slate-900">{client.name}</span>
-            )}
-          </div>
-          <a 
-            href={`https://wa.me/${brand?.contact_whatsapp}`}
-            className="px-6 py-2.5 rounded-full text-white font-bold text-sm transition-all hover:opacity-90 shadow-lg shadow-indigo-200"
-            style={{ backgroundColor: primaryColor }}
-          >
-            Falar com Especialista
-          </a>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-3">
+             <div className="w-8 h-8 md:w-10 md:h-10 bg-indigo-500 rounded-xl flex items-center justify-center font-black italic shadow-lg shadow-indigo-500/20 text-sm md:text-base">R</div>
+             <span className="text-lg md:text-xl font-black tracking-tighter uppercase italic">{client.name}</span>
+          </motion.div>
+          <a href={`https://wa.me/${brand?.contact_whatsapp}`} className="px-5 md:px-8 py-2 md:py-3 bg-white text-black text-[10px] md:text-xs font-black uppercase tracking-widest rounded-full hover:bg-indigo-500 hover:text-white transition-all">WhatsApp</a>
         </div>
-      </motion.nav>
+      </nav>
 
-      {/* Hero Section com Revelação Escalada */}
-      <section className="relative py-24 lg:py-32 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
-          <motion.div 
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
+      {/* Hero */}
+      <section className="pt-32 md:pt-48 pb-20 md:pb-32 px-4 md:px-10 relative overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-500/10 via-transparent to-transparent -z-10" />
+        <div className="max-w-7xl mx-auto">
+           <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="relative z-10 space-y-8"
-          >
-            <span 
-              className="inline-block px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest text-white shadow-lg"
-              style={{ backgroundColor: primaryColor }}
-            >
-              Atendimento em {page?.location || 'Sua Região'}
-            </span>
-            <h1 className="text-5xl lg:text-7xl font-extrabold tracking-tight text-slate-900 leading-[1.1]">
-              {page?.service_name || 'Serviços Especializados'} <br />
-              <span className="text-slate-400 font-medium italic">com Qualidade Premium</span>
-            </h1>
-            <p className="text-xl text-slate-500 leading-relaxed max-w-xl">
-              {brand?.description || page?.meta_description || 'Oferecemos as melhores soluções do mercado com foco em excelência e satisfação total do cliente.'}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
-               <button 
-                className="px-10 py-5 rounded-2xl text-white font-bold transition-all hover:scale-105 active:scale-95 shadow-2xl"
-                style={{ backgroundColor: primaryColor }}
-               >
-                 Solicitar Orçamento Grátis
-               </button>
-            </div>
-          </motion.div>
-
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-            className="relative"
-          >
-            <div 
-              className="absolute -inset-10 rounded-[40px] blur-[100px] opacity-20 animate-pulse"
-              style={{ backgroundColor: primaryColor }}
-            />
-            <img 
-              src={brand?.hero_image || 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=1000&auto=format&fit=crop'} 
-              alt="Serviço"
-              className="relative rounded-[40px] shadow-2xl object-cover aspect-video lg:aspect-square"
-            />
-          </motion.div>
+            className="text-center space-y-8 md:space-y-12"
+           >
+              <h1 className="text-5xl md:text-9xl font-black tracking-tighter uppercase italic leading-[0.8] md:leading-[0.85]">
+                {page?.service_name || 'Especialista em'} <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-violet-500">{page?.location || 'Sua Região'}</span>
+              </h1>
+              <p className="text-lg md:text-2xl text-white/40 font-light max-w-2xl mx-auto leading-relaxed px-4">
+                {brand?.description || page?.meta_description}
+              </p>
+           </motion.div>
         </div>
       </section>
 
-      {/* Grid de Páginas com Micro-interações */}
-      {pages && pages.length > 0 && (
-        <section className="py-24 bg-slate-50">
-          <div className="max-w-7xl mx-auto px-6 text-center mb-16">
-            <motion.h2 {...fadeInUp} className="text-4xl font-bold tracking-tight mb-4">Áreas que Atendemos</motion.h2>
-            <motion.p {...fadeInUp} className="text-slate-500">Encontre {client.name} nas principais cidades.</motion.p>
-          </div>
-          <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-6">
-            {pages.map((p, i) => (
-              <motion.a 
-                key={p.id}
-                href={`/${p.slug}`}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                whileHover={{ y: -5, scale: 1.02 }}
-                className="p-8 bg-white rounded-3xl border border-slate-100 hover:border-indigo-200 transition-all group shadow-sm hover:shadow-xl"
-              >
-                <h3 className="font-bold text-lg mb-2 group-hover:text-indigo-600 transition-colors">{p.service_name}</h3>
-                <p className="text-sm text-slate-400 font-medium">Em {p.location}</p>
-              </motion.a>
-            ))}
+      {/* Conteúdo Dinâmico (SEO) */}
+      {page?.ai_content && (
+        <section className="py-20 md:py-32 px-4 md:px-10 bg-[#050508]">
+          <div className="max-w-4xl mx-auto">
+            <div className="prose-seo" dangerouslySetInnerHTML={{ __html: page.ai_content }} />
           </div>
         </section>
       )}
 
-      {/* Mapa */}
-      {features.show_maps && brand?.google_maps_embed && (
-        <motion.section 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="py-24 max-w-7xl mx-auto px-6"
-        >
-           <div className="rounded-[40px] overflow-hidden border border-slate-100 shadow-2xl h-[500px]">
-             <iframe 
-                src={brand.google_maps_embed} 
-                width="100%" 
-                height="100%" 
-                style={{ border: 0 }} 
-                allowFullScreen={true} 
-                loading="lazy"
-              />
-           </div>
-        </motion.section>
-      )}
+      {/* Social Proof Section */}
+      <section className="py-20 md:py-32 px-4 md:px-10 border-t border-white/5">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl md:text-5xl font-black uppercase italic tracking-tighter mb-16 md:mb-20">O que dizem <br /><span className="text-indigo-500">nossos clientes</span></h2>
+          <div className="grid md:grid-cols-3 gap-6 md:gap-10">
+            {[1, 2, 3].map((i) => (
+              <motion.div 
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="p-8 md:p-10 bg-white/5 rounded-[30px] md:rounded-[40px] border border-white/5 hover:bg-white/10 transition-colors"
+              >
+                <div className="flex gap-1 mb-6">
+                  {[1,2,3,4,5].map(s => <span key={s} className="text-indigo-500 text-sm md:text-base">★</span>)}
+                </div>
+                <p className="text-base md:text-lg text-white/70 italic mb-8">"Serviço impecável em {page?.location || 'nossa região'}. A equipe do {client.name} superou todas as expectativas!"</p>
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-indigo-500/20 border border-indigo-500/30" />
+                  <div>
+                    <p className="text-xs md:text-sm font-black uppercase italic">Cliente Satisfeito</p>
+                    <p className="text-[10px] md:text-xs text-white/30 font-bold uppercase tracking-widest">{page?.location}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-      {/* Footer Industrial */}
-      <footer className="bg-slate-900 text-white py-32">
-        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-20 border-b border-white/5 pb-20 mb-20">
-          <div className="space-y-8">
-            <h4 className="text-2xl font-bold italic tracking-tighter uppercase">{client.name}</h4>
-            <p className="text-slate-400 text-sm leading-relaxed max-w-xs">{brand?.address || 'Consulte nossa área de atendimento local.'}</p>
-          </div>
-          <div className="space-y-8">
-            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30">Contato Central</h4>
-            <p className="text-2xl font-bold tracking-tight">{brand?.contact_whatsapp}</p>
-          </div>
-          <div className="space-y-8">
-            <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30">Conecte-se</h4>
-            <div className="flex gap-6">
-              {brand?.social_links?.instagram && <a href={brand.social_links.instagram} className="text-slate-400 hover:text-white transition-colors">Instagram</a>}
-              {brand?.social_links?.facebook && <a href={brand.social_links.facebook} className="text-slate-400 hover:text-white transition-colors">Facebook</a>}
+      {/* Map Section */}
+      <section className="py-20 md:py-32 px-4 md:px-10 bg-white/5">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-10 md:gap-20 items-center">
+          <div className="space-y-8 md:space-y-12">
+            <h2 className="text-4xl md:text-6xl font-black uppercase italic tracking-tighter">Onde nos <br /><span className="text-indigo-500">encontrar</span></h2>
+            <div className="space-y-6 md:space-y-8">
+              <div className="flex items-center gap-6">
+                <div className="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-xl md:text-2xl">📍</div>
+                <div>
+                  <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.3em] text-indigo-500 mb-1 md:mb-2">Endereço</p>
+                  <p className="text-lg md:text-xl font-bold text-white/80">{brand?.address || 'Disponível em toda a região'}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-6">
+                <div className="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-xl md:text-2xl">💬</div>
+                <div>
+                  <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.3em] text-indigo-500 mb-1 md:mb-2">WhatsApp</p>
+                  <p className="text-lg md:text-xl font-bold text-white/80">{brand?.contact_whatsapp || 'Entre em contato'}</p>
+                </div>
+              </div>
             </div>
           </div>
+          <div className="h-[400px] md:h-[600px] rounded-[30px] md:rounded-[60px] overflow-hidden border border-white/10 shadow-2xl">
+            <iframe 
+              width="100%" 
+              height="100%" 
+              frameBorder="0" 
+              scrolling="no" 
+              marginHeight={0} 
+              marginWidth={0} 
+              src={publicMapUrl}
+              className="grayscale invert contrast-125 opacity-80"
+            />
+          </div>
         </div>
-        <div className="max-w-7xl mx-auto px-6 text-center text-[10px] text-slate-600 uppercase tracking-[0.5em] font-bold">
-           © {new Date().getFullYear()} {client.name} | Premium Tenant Infra by Rankia.cloud
-        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-20 md:py-32 px-4 md:px-10 border-t border-white/5 text-center">
+         <p className="text-3xl md:text-5xl font-black italic tracking-tighter uppercase mb-10 md:mb-20">{client.name}</p>
+         <div className="flex flex-wrap justify-center gap-6 md:gap-10 text-[10px] md:text-xs font-black uppercase tracking-[0.4em] text-white/20 mb-10 md:mb-20">
+            <a href="#" className="hover:text-indigo-500 transition-colors">Termos de Uso</a>
+            <a href="#" className="hover:text-indigo-500 transition-colors">Privacidade</a>
+            <a href="#" className="hover:text-indigo-500 transition-colors">Cookies</a>
+         </div>
+         <p className="text-white/10 text-[8px] md:text-[10px] font-bold uppercase tracking-[0.5em]">© {new Date().getFullYear()} — Todos os direitos reservados</p>
       </footer>
     </div>
   );

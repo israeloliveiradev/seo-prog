@@ -36,8 +36,17 @@ export default function AdminClientsPage() {
     try {
       const response = await fetch('/api/admin/clients/create', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newClient)
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer authenticated'
+        },
+        body: JSON.stringify({
+          ...newClient,
+          brand_settings: {
+            company_name: newClient.name,
+            primary_color: '#6366f1'
+          }
+        })
       });
       if (response.ok) {
         setIsCreating(false);
@@ -88,15 +97,15 @@ export default function AdminClientsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050508] text-white p-8">
-      <div className="flex justify-between items-center mb-12">
+    <div className="min-h-screen bg-[#050508] text-white p-4 md:p-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-12">
         <div>
-          <h1 className="text-4xl font-black uppercase italic tracking-tighter">Inquilinos</h1>
-          <p className="text-white/40 text-sm mt-1">Gestão de infraestrutura e estética multi-tenant.</p>
+          <h1 className="text-3xl md:text-4xl font-black uppercase italic tracking-tighter">Inquilinos</h1>
+          <p className="text-white/40 text-xs md:text-sm mt-1">Gestão de infraestrutura e estética multi-tenant.</p>
         </div>
         <button 
           onClick={() => setIsCreating(true)}
-          className="px-6 py-3 bg-indigo-500 rounded-xl font-bold hover:bg-indigo-400 transition-all shadow-xl shadow-indigo-500/20"
+          className="w-full sm:w-auto px-6 py-4 bg-indigo-500 rounded-xl font-bold hover:bg-indigo-400 transition-all shadow-xl shadow-indigo-500/20 active:scale-95"
         >
           + Novo Cliente
         </button>

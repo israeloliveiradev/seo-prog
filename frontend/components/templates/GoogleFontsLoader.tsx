@@ -2,18 +2,34 @@
 
 import React from 'react';
 
-export const GoogleFontsLoader = ({ fontFamily }: { fontFamily?: string }) => {
+interface GoogleFontsLoaderProps {
+  fontFamily: string;
+}
+
+/**
+ * Carrega fontes do Google de forma segura no Next.js App Router
+ * Evita erros de hidratação e garante que a fonte escolhida no Admin seja aplicada.
+ */
+export const GoogleFontsLoader: React.FC<GoogleFontsLoaderProps> = ({ fontFamily }) => {
   if (!fontFamily || fontFamily === 'Inter') return null;
 
-  const fontName = fontFamily.replace(/\s+/g, '+');
-  
+  const fontUrl = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/\s+/g, '+')}:wght@300;400;500;700;900&display=swap`;
+
   return (
-    <style jsx global>{`
-      @import url('https://fonts.googleapis.com/css2?family=${fontName}:wght@300;400;700;900&display=swap');
-      
-      body, html, * {
-        font-family: '${fontFamily}', sans-serif !important;
-      }
-    `}</style>
+    <>
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          @import url('${fontUrl}');
+          :root {
+            --font-family-dynamic: '${fontFamily}', sans-serif;
+          }
+          body, html {
+            font-family: var(--font-family-dynamic) !important;
+          }
+        `
+      }} />
+    </>
   );
 };

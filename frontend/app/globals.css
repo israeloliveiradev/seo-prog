@@ -25,84 +25,63 @@ html {
 }
 
 /* =====================================================
-   PROSE SEO — Estilos para o conteúdo HTML do Gemini
-   Renderizado via dangerouslySetInnerHTML
+   PROSE SEO — Estilos Adaptativos para Conteúdo de IA
    ===================================================== */
-/* =====================================================
-   PROSE INDUSTRIAL — Estilos para o conteúdo HTML gerado
-   ===================================================== */
-.prose-industrial {
+.prose-seo {
   max-width: 100%;
   line-height: 1.8;
-  font-size: 1.05rem;
+  font-size: 1.1rem;
+  animation: fadeIn 0.8s ease-out;
 }
 
-.prose-industrial h2 {
-  font-size: 1.875rem;
-  font-weight: 900;
-  color: #fff;
-  margin-top: 4rem;
+.prose-seo h2 {
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  font-weight: 800;
+  margin-top: 3.5rem;
   margin-bottom: 1.5rem;
-  text-transform: uppercase;
-  font-style: italic;
-  letter-spacing: -0.04em;
-  border-left: 4px solid var(--client-primary, #6366f1);
-  padding-left: 1.5rem;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
 }
 
-.prose-industrial h2:first-child {
-  margin-top: 0;
-}
-
-.prose-industrial h3 {
-  font-size: 1.25rem;
+.prose-seo h3 {
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.9);
   margin-top: 2.5rem;
   margin-bottom: 1rem;
   letter-spacing: -0.02em;
 }
 
-.prose-industrial p {
-  color: rgba(255, 255, 255, 0.5);
+.prose-seo p {
   margin-bottom: 1.5rem;
+  opacity: 0.85;
 }
 
-.prose-industrial ul {
-  list-style: none;
-  padding: 0;
+.prose-seo ul, .prose-seo ol {
   margin: 2rem 0;
-  display: grid;
-  grid-template-cols: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
+  padding-left: 1.5rem;
 }
 
-.prose-industrial ul li {
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.05);
-  padding: 1rem 1.25rem;
-  border-radius: 1rem;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.9rem;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+.prose-seo li {
+  margin-bottom: 0.75rem;
+  position: relative;
 }
 
-.prose-industrial ul li::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 99px;
-  background: var(--client-primary, #6366f1);
-  box-shadow: 0 0 8px var(--client-primary, #6366f1);
+.prose-seo strong {
+  font-weight: 700;
+  color: inherit;
 }
 
-/* Animação suave no carregamento */
-.prose-seo {
-  animation: fadeIn 0.4s ease-out;
+/* Ajustes para templates escuros */
+.bg-black .prose-seo, .bg-[#050508] .prose-seo, .bg-[#111111] .prose-seo {
+  color: rgba(255, 255, 255, 0.8);
 }
+.bg-black .prose-seo h2, .bg-black .prose-seo h3 { color: #fff; }
+
+/* Ajustes para templates claros */
+.bg-white .prose-seo, .bg-[#f8f5f0] .prose-seo, .bg-[#fffcf5] .prose-seo {
+  color: #334155;
+}
+.bg-white .prose-seo h2, .bg-white .prose-seo h3 { color: #0f172a; }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }

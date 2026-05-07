@@ -62,7 +62,7 @@ export default function AdminDashboard() {
       </section>
 
       {/* Grid de Métricas Industriais */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <StatCard title="Publicadas" value={metrics.COMPLETED} color="text-green-400" icon="✅" />
         <StatCard title="Em Fila" value={metrics.PENDING} color="text-amber-400" icon="⏳" />
         <StatCard title="Processando" value={metrics.PROCESSING} color="text-indigo-400" icon="⚙️" />

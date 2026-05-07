@@ -11,9 +11,9 @@ import { AutomotiveTemplate } from '@/components/templates/AutomotiveTemplate';
 import { EducationTemplate } from '@/components/templates/EducationTemplate';
 import { FoodTemplate } from '@/components/templates/FoodTemplate';
 
-export default async function SiteHomePage({ params }: { params: { site: string } }) {
+export default async function SiteHomePage({ params }: { params: Promise<{ site: string }> }) {
+  const { site } = await params;
   const supabase = createServiceClient();
-  const { site } = params;
 
   // Busca os dados completos do cliente
   const { data: client } = await supabase
