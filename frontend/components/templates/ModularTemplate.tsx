@@ -17,6 +17,9 @@ export const ModularTemplate: React.FC<TemplateProps> = ({ client, page, pages }
   return (
     <div className={`min-h-screen transition-colors duration-500 font-sans ${designMode === 'cyber' ? 'bg-[#050508] text-white' : 'bg-background text-foreground'}`}>
       <GoogleFontsLoader fontFamily={brand?.font_family || 'Inter'} />
+      {brand?.font_secondary && brand?.font_secondary !== brand?.font_family && (
+        <GoogleFontsLoader fontFamily={brand.font_secondary} />
+      )}
       
       {/* Global Aesthetics Layer */}
       {designMode === 'glass' && (

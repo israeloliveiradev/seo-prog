@@ -27,7 +27,7 @@ import { CyberTemplate } from '../templates/CyberTemplate';
 import { ModularTemplate } from '../templates/ModularTemplate';
 import { GoogleFontsLoader } from '../templates/GoogleFontsLoader';
 
-import { ImageIcon, Layout, Palette, Type, Move, Settings2, Plus, Trash2, Globe, CheckCircle2, Zap, Star, Shield, MessageSquare, BarChart3, Eye, EyeOff, Smartphone, Laptop, Tablet, Save, ArrowLeft, RotateCcw, ArrowUp, ArrowDown } from 'lucide-react';
+import { ImageIcon, Layout, Palette, Type, Move, Settings2, Plus, Trash2, Globe, CheckCircle2, Zap, Star, Shield, MessageSquare, BarChart3, Eye, EyeOff, Smartphone, Laptop, Tablet, Save, ArrowLeft, RotateCcw, ArrowUp, ArrowDown, LayoutGrid, CreditCard, Sun, Moon, Monitor, MousePointer2 } from 'lucide-react';
 
 const hexToRgb = (hex: string) => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -139,8 +139,14 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ client, onSave }) =>
         layout_order: ['hero', 'gallery', 'trust', 'faq'],
         sections_data: {
           hero: { type: 'hero', badge: '🐾 Cuidado com Amor', title: 'O Melhor Amigo do seu Pet' },
-          gallery: { type: 'gallery', title: 'Nossos Clientes Felizes' },
-          trust: { type: 'trust', title: 'Certificações de Qualidade' }
+          gallery: { type: 'gallery', title: 'Nossos Clientes Felizes', items: [
+            { title: 'Banho & Tosa', description: 'Cuidado completo', imageUrl: 'https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?q=80&w=400' },
+            { title: 'Hotel Pet', description: 'Conforto total', imageUrl: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?q=80&w=400' }
+          ] },
+          trust: { type: 'trust', title: 'Certificações de Qualidade', items: [
+            { imageUrl: 'https://cdn.worldvectorlogo.com/logos/pet-smart.svg' },
+            { imageUrl: 'https://cdn.worldvectorlogo.com/logos/purina.svg' }
+          ] }
         }
       },
       geladeira: {
