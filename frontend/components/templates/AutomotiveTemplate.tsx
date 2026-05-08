@@ -3,11 +3,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { GoogleFontsLoader } from './GoogleFontsLoader';
-import { HeroSection } from './landing/HeroSection';
-import { BentoGrid } from './landing/BentoGrid';
-import { PremiumTestimonials } from './landing/PremiumTestimonials';
-import { SectionHeader } from './landing/SectionHeader';
-import { Section } from './landing/Section';
+import { HeroSection } from '../landing/HeroSection';
+import { BentoGrid } from '../landing/BentoGrid';
+import { PremiumTestimonials } from '../landing/PremiumTestimonials';
+import { SectionHeader } from '../landing/SectionHeader';
+import { Section } from '../landing/Section';
 import { ThemeToggle } from '../theme-toggle';
 import { landingConfig } from '@/config/landing.config';
 
