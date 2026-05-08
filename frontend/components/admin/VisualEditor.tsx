@@ -27,11 +27,12 @@ import { CyberTemplate } from '../templates/CyberTemplate';
 import { ModularTemplate } from '../templates/ModularTemplate';
 import { GoogleFontsLoader } from '../templates/GoogleFontsLoader';
 
-import { 
-  Monitor, Tablet, Smartphone, Save, Palette, Type, Layout, 
-  MessageSquare, Settings2, Image as ImageIcon, Eye, EyeOff, 
-  RotateCcw, MousePointer2, CheckCircle2, Move, ArrowUp, ArrowDown, Trash2, Plus, BarChart3
-} from 'lucide-react';
+import { ImageIcon, Layout, Palette, Type, Move, Settings2, Plus, Trash2, Globe, CheckCircle2, Zap, Star, Shield, MessageSquare, BarChart3, Eye, EyeOff, Smartphone, Laptop, Tablet, Save, ArrowLeft } from 'lucide-react';
+
+const hexToRgb = (hex: string) => {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '0, 0, 0';
+};
 
 interface VisualEditorProps {
   client: any;
@@ -98,6 +99,7 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ client, onSave }) =>
   // Injeção de CSS Variables para o Preview
   const previewStyles = useMemo(() => ({
     '--primary': brand.primary_color,
+    '--primary-rgb': hexToRgb(brand.primary_color),
     '--secondary': brand.secondary_color,
     '--accent': brand.accent_color,
     '--background': brand.bg_color,
@@ -430,6 +432,7 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ client, onSave }) =>
                    { id: 'pricing', label: 'Preços/Planos', icon: CreditCard },
                    { id: 'trust', label: 'Logos/Confiança', icon: Shield },
                    { id: 'faq', label: 'Perguntas (FAQ)', icon: MessageSquare },
+                   { id: 'bento', label: 'Bento Grid', icon: LayoutGrid },
                  ].map((block) => (
                     <button 
                       key={block.id}

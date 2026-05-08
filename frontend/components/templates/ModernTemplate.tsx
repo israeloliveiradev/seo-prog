@@ -52,7 +52,7 @@ export const ModernTemplate: React.FC<TemplateProps> = ({ client, page, pages })
   const publicMapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(mapAddress)}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-indigo-500/30 overflow-x-hidden transition-colors duration-300">
+    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30 overflow-x-hidden transition-colors duration-300">
       <GoogleFontsLoader fontFamily={fontFamily} />
       
       {/* 1. HERO - Impacto Imediato */}
@@ -137,9 +137,9 @@ export const ModernTemplate: React.FC<TemplateProps> = ({ client, page, pages })
                 key={p.id} 
                 href={`/${p.slug}`}
                 whileHover={{ scale: 1.02 }}
-                className="p-6 bg-muted/30 border border-border rounded-2xl text-center group hover:bg-muted hover:border-indigo-500/30 transition-all"
+                className="p-6 bg-muted/30 border border-border rounded-2xl text-center group hover:bg-muted hover:border-primary/30 transition-all"
               >
-                <p className="text-[10px] font-black uppercase text-muted-foreground mb-2 group-hover:text-indigo-500">{p.location}</p>
+                <p className="text-[10px] font-black uppercase text-muted-foreground mb-2 group-hover:text-primary">{p.location}</p>
                 <h4 className="text-sm font-bold uppercase italic tracking-tight">{p.service_name}</h4>
               </motion.a>
             ))}
@@ -163,7 +163,7 @@ export const ModernTemplate: React.FC<TemplateProps> = ({ client, page, pages })
               <img src={brand.logo_url} alt={client.name} className="h-12 w-auto object-contain" />
             ) : (
               <>
-                <div className="w-1.5 h-8 bg-indigo-500 rounded-full" />
+                <div className="w-1.5 h-8 bg-primary rounded-full" />
                 <span className="text-2xl font-black italic uppercase tracking-tighter text-foreground">{client.name}</span>
               </>
             )}

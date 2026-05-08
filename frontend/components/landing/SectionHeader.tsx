@@ -25,7 +25,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="inline-flex items-center px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[10px] md:text-xs font-black uppercase tracking-[0.2em] shadow-lg shadow-indigo-500/5"
+          className="inline-flex items-center px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] md:text-xs font-black uppercase tracking-[0.2em] shadow-lg shadow-primary/5"
         >
           {badge}
         </motion.span>
@@ -36,7 +36,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ delay: 0.1 }}
-        className={`text-4xl md:text-7xl font-black tracking-tighter leading-[0.9] md:leading-[0.8] ${
+        className={`text-3xl md:text-7xl font-black tracking-tighter leading-[0.9] md:leading-[0.8] ${
           gradient 
             ? 'text-transparent bg-clip-text bg-gradient-to-br from-foreground via-foreground to-foreground/40' 
             : 'text-foreground'
@@ -51,7 +51,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
-          className="text-lg md:text-xl text-muted-foreground font-light leading-relaxed max-w-2xl mx-auto italic"
+          className="text-base md:text-xl text-muted-foreground font-light leading-relaxed max-w-2xl mx-auto italic"
         >
           {subtitle}
         </motion.p>
@@ -62,7 +62,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
         whileInView={{ scaleX: 1 }}
         viewport={{ once: true }}
         transition={{ delay: 0.3, duration: 1 }}
-        className={`h-px w-24 bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent ${align === 'center' ? 'mx-auto' : ''}`}
+        className={`h-px w-24 bg-gradient-to-r from-transparent via-primary/50 to-transparent ${align === 'center' ? 'mx-auto' : ''}`}
       />
     </div>
   );

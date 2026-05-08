@@ -1,9 +1,11 @@
 'use client';
 
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Section } from '../landing/Section';
 import { SectionHeader } from '../landing/SectionHeader';
-import { Check, Star, Zap, Shield, Smartphone, Globe, Box, Info, LayoutGrid, Users, Trophy, CreditCard, ArrowRight } from 'lucide-react';
+import { Check, Star, Zap, Shield, Smartphone, Globe, Box, Info, LayoutGrid, Users, Trophy, CreditCard, ArrowRight, ChevronDown } from 'lucide-react';
+import { BentoGrid, BentoGridItem } from '../landing/BentoGrid';
 
 const IconMap: Record<string, any> = {
   zap: Zap,
@@ -35,7 +37,7 @@ export const HeroBlock = ({ data, brand }: any) => {
           <div className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.2em]">
              {data.badge || 'Novidade'}
           </div>
-          <h1 className="text-5xl md:text-8xl font-black tracking-tighter leading-[0.9] uppercase italic" style={{ fontFamily: 'var(--font-sans)', color: isCyber ? 'white' : 'var(--foreground)' }}>
+          <h1 className="text-4xl md:text-8xl font-black tracking-tighter leading-[0.9] uppercase italic" style={{ fontFamily: 'var(--font-sans)', color: isCyber ? 'white' : 'var(--foreground)' }}>
             {data.title}
           </h1>
           <p className="text-xl opacity-60 font-medium leading-relaxed max-w-xl">
@@ -187,6 +189,49 @@ export const TrustBlock = ({ data, brand }: any) => {
     </div>
   );
 };
+// --- BLOCO 6: PERGUNTAS FREQUENTES (FAQ) ---
+export const FAQBlock = ({ data, brand }: any) => {
+  return (
+    <Section className="bg-white">
+       <SectionHeader title={data.title || "Perguntas Frequentes"} subtitle={data.subtitle || "Tudo o que você precisa saber."} />
+       <div className="max-w-3xl mx-auto mt-12 space-y-4">
+          {(data.items || []).map((item: any, i: number) => (
+             <details key={i} className="group p-6 bg-slate-50 border border-slate-100 open:bg-white open:shadow-xl transition-all" style={{ borderRadius: brand.border_radius }}>
+                <summary className="flex justify-between items-center font-bold cursor-pointer list-none">
+                   <span className="text-lg">{item.title}</span>
+                   <ChevronDown size={18} className="group-open:rotate-180 transition-transform" />
+                </summary>
+                <p className="mt-4 text-slate-500 leading-relaxed text-sm">{item.description}</p>
+             </details>
+          ))}
+       </div>
+    </Section>
+  );
+};
+
+// --- BLOCO 7: BENTO GRID ---
+export const BentoGridBlock = ({ data, brand }: any) => {
+  return (
+    <Section>
+       <SectionHeader title={data.title || "Vantagens"} subtitle={data.subtitle || "Por que nos escolher?"} />
+       <div className="max-w-7xl mx-auto mt-12">
+          <BentoGrid>
+             {(data.items || []).map((item: any, i: number) => (
+                <BentoGridItem
+                  key={i}
+                  title={item.title}
+                  description={item.description}
+                  header={<div className="h-full w-full bg-slate-100 rounded-xl" />}
+                  icon={<Zap size={20} className="text-primary" />}
+                  className={i === 3 || i === 6 ? "md:col-span-2" : ""}
+                />
+             ))}
+          </BentoGrid>
+       </div>
+    </Section>
+  );
+};
+
 export const BlockRenderer = ({ layout, sectionsData, brand, page }: any) => {
   if (!layout || layout.length === 0) return null;
 
@@ -216,6 +261,10 @@ export const BlockRenderer = ({ layout, sectionsData, brand, page }: any) => {
             return <PricingBlock key={index} data={blockData} brand={brand} />;
           case 'trust':
             return <TrustBlock key={index} data={blockData} brand={brand} />;
+          case 'faq':
+            return <FAQBlock key={index} data={blockData} brand={brand} />;
+          case 'bento':
+            return <BentoGridBlock key={index} data={blockData} brand={brand} />;
           default:
             return null;
         }
