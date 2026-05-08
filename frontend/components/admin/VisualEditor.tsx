@@ -56,8 +56,6 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ client, onSave }) =>
     logo_url: '',
     layout_order: ['hero', 'specs', 'gallery'],
     design_mode: 'modern', // 'modern', 'glass', 'luxury', 'cyber'
-    border_radius: '1rem',
-    section_spacing: '5rem',
     shadow_intensity: 'soft',
     ...client.brand_settings
   });
