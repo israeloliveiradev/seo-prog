@@ -162,3 +162,79 @@ VALUES (
   '["desenvolvimento de software", "suporte técnico", "cloud computing", "segurança digital"]'::jsonb
 )
 ON CONFLICT DO NOTHING;
+
+-- ==========================================
+-- 4. TESTIMONIALS (PROVA SOCIAL)
+-- ==========================================
+CREATE TABLE IF NOT EXISTS testimonials (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  client_id UUID REFERENCES clients(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  role TEXT,
+  company TEXT,
+  avatar_url TEXT,
+  content TEXT NOT NULL,
+  rating INTEGER DEFAULT 5 CHECK (rating >= 1 AND rating <= 5),
+  is_featured BOOLEAN DEFAULT false,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_testimonials_client ON testimonials(client_id);
+
+DROP TRIGGER IF EXISTS trigger_testimonials_updated_at ON testimonials;
+CREATE TRIGGER trigger_testimonials_updated_at
+  BEFORE UPDATE ON testimonials
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+ALTER TABLE testimonials ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "public_read_testimonials" ON testimonials;
+CREATE POLICY "public_read_testimonials"
+  ON testimonials FOR SELECT
+  TO anon
+  USING (is_active = true);
+  
+DROP POLICY IF EXISTS "service_role_full_access_testimonials" ON testimonials;
+CREATE POLICY "service_role_full_access_testimonials"
+  ON testimonials FOR ALL
+  TO service_role
+  USING (true)
+  WITH CHECK (true);
+
+-- ==========================================
+-- 5. FAQs (PERGUNTAS FREQUENTES)
+-- ==========================================
+CREATE TABLE IF NOT EXISTS faqs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  client_id UUID REFERENCES clients(id) ON DELETE CASCADE,
+  question TEXT NOT NULL,
+  answer TEXT NOT NULL,
+  display_order INTEGER DEFAULT 0,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_faqs_client ON faqs(client_id);
+
+DROP TRIGGER IF EXISTS trigger_faqs_updated_at ON faqs;
+CREATE TRIGGER trigger_faqs_updated_at
+  BEFORE UPDATE ON faqs
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+ALTER TABLE faqs ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "public_read_faqs" ON faqs;
+CREATE POLICY "public_read_faqs"
+  ON faqs FOR SELECT
+  TO anon
+  USING (is_active = true);
+  
+DROP POLICY IF EXISTS "service_role_full_access_faqs" ON faqs;
+CREATE POLICY "service_role_full_access_faqs"
+  ON faqs FOR ALL
+  TO service_role
+  USING (true)
+  WITH CHECK (true);

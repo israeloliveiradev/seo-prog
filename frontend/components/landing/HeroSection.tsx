@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles } from 'lucide-react';
 
@@ -98,11 +99,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           >
              {/* Glow effect behind image */}
              <div className="absolute inset-0 bg-indigo-500/20 blur-[100px] rounded-full scale-90 opacity-50" />
-             <div className="relative rounded-[40px] border border-white/10 overflow-hidden bg-black/40 backdrop-blur-2xl shadow-2xl p-2">
-                <img 
+             <div className="relative rounded-[40px] border border-white/10 overflow-hidden bg-black/40 backdrop-blur-2xl shadow-2xl p-2 h-[400px] md:h-[600px]">
+                <Image 
                   src={imageUrl} 
                   alt="Hero Visualization" 
-                  className="w-full h-auto rounded-[32px] opacity-90 hover:opacity-100 transition-opacity duration-700" 
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-cover rounded-[32px] opacity-90 hover:opacity-100 transition-opacity duration-700" 
+                  priority
                 />
              </div>
           </motion.div>

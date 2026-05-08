@@ -28,6 +28,32 @@ export interface GeneratedPage {
   updated_at: string;
 }
 
+export interface Testimonial {
+  id: string;
+  client_id: string;
+  name: string;
+  role: string | null;
+  company: string | null;
+  avatar_url: string | null;
+  content: string;
+  rating: number;
+  is_featured: boolean;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface FAQ {
+  id: string;
+  client_id: string;
+  question: string;
+  answer: string;
+  display_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -40,6 +66,16 @@ export interface Database {
         Row: GeneratedPage;
         Insert: Omit<GeneratedPage, 'id' | 'created_at' | 'updated_at'>;
         Update: Partial<Omit<GeneratedPage, 'id' | 'created_at' | 'updated_at'>>;
+      };
+      testimonials: {
+        Row: Testimonial;
+        Insert: Omit<Testimonial, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<Testimonial, 'id' | 'created_at' | 'updated_at'>>;
+      };
+      faqs: {
+        Row: FAQ;
+        Insert: Omit<FAQ, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<FAQ, 'id' | 'created_at' | 'updated_at'>>;
       };
     };
     Views: Record<string, never>;
