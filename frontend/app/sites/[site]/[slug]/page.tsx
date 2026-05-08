@@ -19,36 +19,47 @@ interface SitePageProps {
 export const revalidate = 3600;
 
 async function getTenantData(site: string, slug: string) {
-  const supabase = createServiceClient();
+  try {
+    console.log(`[DIAGNOSTICO] Buscando dados para Site: ${site}, Slug: ${slug}`);
+    const supabase = createServiceClient();
 
-  const { data: client } = await supabase
-    .from('clients')
-    .select('*')
-    .or(`subdomain.eq.${site},custom_domain.eq.${site}`)
-    .single();
+    const { data: client, error: clientError } = await supabase
+      .from('clients')
+      .select('*')
+      .or(`subdomain.eq.${site},custom_domain.eq.${site}`)
+      .single();
 
-  if (!client) return null;
+    if (clientError || !client) {
+      console.error(`[DIAGNOSTICO] Cliente não encontrado: ${site}`, clientError);
+      return null;
+    }
 
-  const { data: page } = await supabase
-    .from('generated_pages')
-    .select('*')
-    .eq('client_id', client.id)
-    .eq('slug', slug)
-    .eq('status', 'COMPLETED')
-    .single();
+    const { data: page, error: pageError } = await supabase
+      .from('generated_pages')
+      .select('*')
+      .eq('client_id', client.id)
+      .eq('slug', slug)
+      .eq('status', 'COMPLETED')
+      .single();
 
-  if (!page) return null;
+    if (pageError || !page) {
+      console.error(`[DIAGNOSTICO] Página não encontrada ou não concluída: ${slug}`, pageError);
+      return null;
+    }
 
-  // Interlinking: Busca outras 6 páginas do mesmo cliente
-  const { data: relatedPages } = await supabase
-    .from('generated_pages')
-    .select('service_name, location, slug')
-    .eq('client_id', client.id)
-    .eq('status', 'COMPLETED')
-    .neq('slug', slug)
-    .limit(8);
+    const { data: relatedPages } = await supabase
+      .from('generated_pages')
+      .select('service_name, location, slug')
+      .eq('client_id', client.id)
+      .eq('status', 'COMPLETED')
+      .neq('slug', slug)
+      .limit(8);
 
-  return { client, page, relatedPages: relatedPages || [] };
+    return { client, page, relatedPages: relatedPages || [] };
+  } catch (error) {
+    console.error('[DIAGNOSTICO] Erro crítico no getTenantData:', error);
+    return null;
+  }
 }
 
 export async function generateMetadata({ params }: SitePageProps): Promise<Metadata> {

@@ -29,9 +29,9 @@ export default async function middleware(req: NextRequest) {
     // Ex: cliente.localhost:3000 -> cliente
     currentHost = hostname.split(':')[0].replace('.localhost', '');
   } else {
-    // Em produção, removemos o domínio raiz
-    // Ex: cliente.rankia.cloud -> cliente
-    currentHost = hostname.replace(`.${rootDomain}`, '');
+    // Em produção, removemos o domínio raiz e a porta se houver
+    // Ex: cliente.rankia.cloud:443 -> cliente
+    currentHost = hostname.split(':')[0].replace(`.${rootDomain}`, '');
   }
 
   // Se for o domínio raiz (rankia.cloud) ou o dashboard (admin.rankia.cloud)
