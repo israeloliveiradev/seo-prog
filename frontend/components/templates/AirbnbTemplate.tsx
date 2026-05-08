@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { GoogleFontsLoader } from './GoogleFontsLoader';
 import { Section } from '../landing/Section';
 import { Star, MapPin, Heart, ShieldCheck, Share } from 'lucide-react';
+import { Button } from '../ui/Button';
 
 interface TemplateProps {
   client: any;
