@@ -154,9 +154,9 @@ export const ModernTemplate: React.FC<TemplateProps> = ({ client, page, pages })
       {/* 9. CTA FINAL */}
       <FinalCTASection data={{
         ...config.sections.finalCta,
-        ctaPrimary: {
-          ...config.sections.finalCta.ctaPrimary,
-          text: brand?.cta_text || config.sections.finalCta.ctaPrimary.text
+        cta: {
+          ...config.sections.finalCta.cta,
+          text: brand?.cta_text || config.sections.finalCta.cta.text
         }
       }} />
 
