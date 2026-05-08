@@ -11,6 +11,22 @@ import { RealEstateTemplate } from '@/components/templates/RealEstateTemplate';
 import { AutomotiveTemplate } from '@/components/templates/AutomotiveTemplate';
 import { EducationTemplate } from '@/components/templates/EducationTemplate';
 import { FoodTemplate } from '@/components/templates/FoodTemplate';
+import { AppleTemplate } from '@/components/templates/AppleTemplate';
+import { LinearTemplate } from '@/components/templates/LinearTemplate';
+import { StripeTemplate } from '@/components/templates/StripeTemplate';
+import { AirbnbTemplate } from '@/components/templates/AirbnbTemplate';
+import { FintechTemplate } from '@/components/templates/FintechTemplate';
+import { SaaSTemplate } from '@/components/templates/SaaSTemplate';
+import { MinimalBlancTemplate } from '@/components/templates/MinimalBlancTemplate';
+import { DarkHackerTemplate } from '@/components/templates/DarkHackerTemplate';
+import { BoldEditorialTemplate } from '@/components/templates/BoldEditorialTemplate';
+import { OrganicSoftTemplate } from '@/components/templates/OrganicSoftTemplate';
+import { CorporateTemplate } from '@/components/templates/CorporateTemplate';
+import { GlassTemplate } from '@/components/templates/GlassTemplate';
+import { RetroTemplate } from '@/components/templates/RetroTemplate';
+import { LuxuryTemplate } from '@/components/templates/LuxuryTemplate';
+import { StartupTemplate } from '@/components/templates/StartupTemplate';
+import { CyberTemplate } from '@/components/templates/CyberTemplate';
 
 interface SitePageProps {
   params: Promise<{ site: string; slug: string }>;
@@ -96,6 +112,22 @@ export default async function TenantDynamicPage({ params }: SitePageProps) {
     automotive: AutomotiveTemplate,
     education: EducationTemplate,
     food: FoodTemplate,
+    apple: AppleTemplate,
+    linear: LinearTemplate,
+    stripe: StripeTemplate,
+    airbnb: AirbnbTemplate,
+    fintech: FintechTemplate,
+    saas: SaaSTemplate,
+    minimal_blanc: MinimalBlancTemplate,
+    dark_hacker: DarkHackerTemplate,
+    bold_editorial: BoldEditorialTemplate,
+    organic_soft: OrganicSoftTemplate,
+    corporate: CorporateTemplate,
+    glass: GlassTemplate,
+    retro: RetroTemplate,
+    luxury: LuxuryTemplate,
+    startup: StartupTemplate,
+    cyber: CyberTemplate,
   };
 
   const TemplateComponent = templates[client.template_id || 'minimalist'] || MinimalistTemplate;
