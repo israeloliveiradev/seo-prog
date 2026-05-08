@@ -4,18 +4,11 @@ import React from 'react';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import { GoogleFontsLoader } from './GoogleFontsLoader';
-import { HeroSection } from '../landing/HeroSection';
+import { ThemeToggle } from '../theme-toggle';
 import { SectionHeader } from '../landing/SectionHeader';
 import { Section } from '../landing/Section';
-import { defaultLandingConfig } from '@/config/landing.config';
-import { ThemeToggle } from '../theme-toggle';
 
-const ProblemSection = dynamic(() => import('../landing/ProblemSection').then(mod => mod.ProblemSection), { ssr: true });
-const SolutionSection = dynamic(() => import('../landing/SolutionSection').then(mod => mod.SolutionSection), { ssr: true });
-const BentoGrid = dynamic(() => import('../landing/BentoGrid').then(mod => mod.BentoGrid), { ssr: true });
-const PremiumTestimonials = dynamic(() => import('../landing/PremiumTestimonials').then(mod => mod.PremiumTestimonials), { ssr: true });
 const FAQSection = dynamic(() => import('../landing/FAQSection').then(mod => mod.FAQSection), { ssr: true });
-const FinalCTASection = dynamic(() => import('../landing/FinalCTASection').then(mod => mod.FinalCTASection), { ssr: true });
 
 interface TemplateProps {
   client: any;
@@ -26,120 +19,141 @@ interface TemplateProps {
 export const MinimalistTemplate: React.FC<TemplateProps> = ({ client, page, pages }) => {
   const brand = client.brand_settings;
   const fontFamily = brand?.font_family || 'Inter';
-
-  const config = defaultLandingConfig;
-
-  const heroData = {
-    badge: brand?.company_name || 'Simplicidade Elegante',
-    title: page?.service_name || config.sections.hero.title,
-    titleAccent: 'em ' + (page?.location || 'sua região'),
-    description: brand?.description || page?.meta_description || config.sections.hero.description,
-    ctaText: config.sections.hero.ctaPrimary.text,
-    ctaLink: 'https://wa.me/' + brand?.contact_whatsapp,
-    imageUrl: brand?.hero_image || config.sections.hero.imageUrl
-  };
-
+  
   const testimonialsData = brand?.testimonials?.length > 0
     ? brand.testimonials
-    : config.sections.features.items;
-
-  const mapAddress = brand?.address || 'São Paulo, Brasil';
-  const publicMapUrl = 'https://maps.google.com/maps?q=' + encodeURIComponent(mapAddress) + '&t=&z=13&ie=UTF8&iwloc=&output=embed';
+    : [
+        { name: brand?.company_name || client.name, role: "Cliente", content: "Excelência e simplicidade definem o serviço. Fomos atendidos com total profissionalismo." }
+      ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-gray-500/30 overflow-x-hidden transition-colors duration-300">
+    <div className="min-h-screen bg-white text-black font-sans selection:bg-black selection:text-white transition-colors duration-300">
       <GoogleFontsLoader fontFamily={fontFamily} />
-      <div className="fixed top-6 right-6 z-[100]">
+      
+      <div className="fixed top-8 right-8 z-[100]">
         <ThemeToggle />
       </div>
 
-      <HeroSection {...heroData} />
-      <ProblemSection data={config.sections.problem} />
-      <SolutionSection data={config.sections.solution} />
+      {/* 1. HERO MINIMALISTA - Tipografia Gigante */}
+      <header className="min-h-screen flex flex-col items-center justify-center px-6 text-center max-w-6xl mx-auto py-20">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-6"
+        >
+          <span className="text-[10px] uppercase tracking-[0.8em] font-medium text-gray-400 block mb-4">
+            {brand?.company_name || 'Premium Service'}
+          </span>
+          <h1 className="text-6xl md:text-9xl font-light tracking-tighter leading-[0.85] text-slate-900">
+            {page?.service_name} <br />
+            <span className="font-serif italic font-normal text-slate-400">em {page?.location}</span>
+          </h1>
+        </motion.div>
 
+        <motion.p 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="text-xl md:text-2xl font-light text-slate-500 max-w-2xl leading-relaxed mt-16"
+        >
+          {page?.meta_description || brand?.description}
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          className="mt-20"
+        >
+          <a 
+            href={`https://wa.me/${brand?.contact_whatsapp}`}
+            className="group relative inline-flex items-center gap-6 px-16 py-8 border border-slate-200 hover:border-black transition-all duration-700"
+          >
+            <span className="text-xs uppercase tracking-[0.3em] font-bold">Solicitar Orçamento</span>
+            <div className="w-1.5 h-1.5 bg-black rounded-full" />
+          </a>
+        </motion.div>
+      </header>
+
+      {/* 2. CONTEÚDO IA - Estilo Artigo de Luxo */}
       {page?.ai_content && (
-        <Section className="pt-0 border-t border-border">
-          <SectionHeader 
-            badge="Especialistas no Assunto"
-            title="Conhecimento Técnico"
-            subtitle="Nossa abordagem detalhada garante os melhores resultados."
-          />
-          <div className="max-w-4xl mx-auto mt-12">
-             <div className="prose-seo" dangerouslySetInnerHTML={{ __html: page.ai_content }} />
+        <Section className="py-40 bg-slate-50/50 border-y border-slate-100">
+          <div className="max-w-3xl mx-auto">
+             <div className="prose prose-slate prose-xl font-light leading-loose" dangerouslySetInnerHTML={{ __html: page.ai_content }} />
           </div>
         </Section>
       )}
 
-      <Section id="features" dark>
-        <SectionHeader {...config.sections.features} />
-        <BentoGrid items={config.sections.features.items} />
-      </Section>
-
-      <Section id="testimonials">
-        <SectionHeader {...config.sections.testimonials} />
-        <PremiumTestimonials testimonials={testimonialsData} />
-      </Section>
-
-      <FAQSection config={config.sections.faq} faqs={brand?.faqs} />
-
-      <Section id="location" dark>
-        <div className="grid lg:grid-cols-2 gap-20 items-center">
-           <div className="space-y-10">
-              <SectionHeader 
-                align="left"
-                badge="Onde Estamos"
-                title={'Atendimento Local em ' + page?.location}
-                subtitle="Nossa base física garante a segurança e proximidade que você precisa."
-              />
-              <div className="p-8 bg-white/5 border border-white/10 rounded-[32px] space-y-4">
-                 <p className="text-sm font-black uppercase tracking-widest text-white/30">Endereço Principal</p>
-                 <p className="text-xl md:text-2xl font-black italic text-white">{brand?.address || 'Consulte nossa localização'}</p>
+      {/* 3. TESTEMUNHOS - Minimal List */}
+      <Section id="testimonials" className="py-40">
+        <div className="max-w-6xl mx-auto">
+          <p className="text-[10px] uppercase tracking-[0.4em] text-slate-300 mb-20 text-center">Reconhecimento</p>
+          <div className="grid md:grid-cols-2 gap-32">
+            {testimonialsData.map((t: any, i: number) => (
+              <div key={i} className="space-y-10">
+                <p className="text-3xl font-light leading-tight text-slate-700 italic">"{t.content}"</p>
+                <div className="flex items-center gap-6">
+                  <div className="w-12 h-px bg-slate-300" />
+                  <div>
+                    <p className="text-xs uppercase tracking-widest font-black text-slate-900">{t.name}</p>
+                    <p className="text-[10px] uppercase tracking-widest text-slate-400 mt-1">{t.role}</p>
+                  </div>
+                </div>
               </div>
-           </div>
-           <div className="h-[400px] md:h-[600px] bg-white/5 border border-white/10 rounded-[40px] overflow-hidden shadow-2xl">
-              <iframe 
-                width="100%" 
-                height="100%" 
-                src={publicMapUrl} 
-                className="grayscale invert opacity-50 contrast-125 hover:opacity-100 transition-opacity duration-700"
-              />
-           </div>
+            ))}
+          </div>
         </div>
       </Section>
 
+      {/* 4. MAPA - Full Clean */}
+      <Section id="location" className="py-40 border-t border-slate-100">
+        <div className="max-w-6xl mx-auto space-y-20">
+          <div className="flex flex-col md:flex-row justify-between items-end gap-10">
+            <h2 className="text-5xl font-light tracking-tighter">Onde você <br/><span className="text-slate-400 italic font-serif">pode nos encontrar.</span></h2>
+            <p className="text-slate-400 font-light max-w-xs">{brand?.address || 'Atendimento exclusivo na região de ' + page?.location}</p>
+          </div>
+          <div className="h-[500px] w-full grayscale border border-slate-100 shadow-sm overflow-hidden">
+            <iframe 
+              width="100%" height="100%" frameBorder="0" scrolling="no" marginHeight={0} marginWidth={0}
+              src={`https://maps.google.com/maps?q=${encodeURIComponent(brand?.address || 'São Paulo')}&t=&z=13&ie=UTF8&iwloc=&output=embed`}
+            />
+          </div>
+        </div>
+      </Section>
+
+      {/* 5. INTERNAL LINKING - Grid Sofisticado */}
       {pages && pages.length > 0 && (
-        <Section id="explore">
-          <SectionHeader 
-            badge="Explorar Região"
-            title="Outras Localidades"
-            subtitle="Atendemos em diversos pontos para sua maior conveniência."
-          />
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
-            {pages.map((p, i) => (
-              <motion.a 
-                key={p.id} 
-                href={'/' + p.slug}
-                whileHover={{ scale: 1.02 }}
-                className="p-6 bg-muted/30 border border-border rounded-2xl text-center group hover:bg-muted hover:border-gray-500/30 transition-all"
-              >
-                <p className="text-[10px] font-black uppercase text-muted-foreground mb-2 group-hover:text-gray-500">{p.location}</p>
-                <h4 className="text-sm font-bold uppercase italic tracking-tight">{p.service_name}</h4>
-              </motion.a>
-            ))}
+        <Section id="explore" className="bg-slate-950 text-white py-40">
+          <div className="max-w-6xl mx-auto">
+            <h3 className="text-4xl font-light tracking-tighter mb-20">Nossa presença <br/><span className="text-slate-500 italic font-serif">na região.</span></h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-16">
+              {pages.map((p, i) => (
+                <a 
+                  key={p.id} 
+                  href={`/${p.slug}`}
+                  className="group block space-y-4"
+                >
+                  <p className="text-[9px] uppercase tracking-[0.5em] text-slate-600 group-hover:text-white transition-colors">{p.service_name}</p>
+                  <div className="flex justify-between items-center border-b border-white/10 pb-4 group-hover:border-white transition-colors">
+                    <span className="text-lg font-light tracking-tight">{p.location}</span>
+                    <span className="text-xs opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+                  </div>
+                </a>
+              ))}
+            </div>
           </div>
         </Section>
       )}
 
-      <FinalCTASection data={config.sections.finalCta} />
-
-      <footer className="py-20 px-6 bg-background text-center space-y-10">
-         <div className="flex items-center justify-center gap-3">
-            <div className="w-1.5 h-8 bg-gray-500 rounded-full" />
-            <span className="text-2xl font-black italic uppercase tracking-tighter text-foreground">{client.name}</span>
-         </div>
-         <p className="text-[10px] font-black uppercase tracking-[0.5em] text-muted-foreground/50 italic">
-           © {new Date().getFullYear()} {client.name} — Programmatic Authority
-         </p>
+      {/* FOOTER */}
+      <footer className="py-32 text-center bg-white">
+        <div className="space-y-8">
+          <h2 className="text-2xl font-light tracking-[0.2em] uppercase text-slate-900">{client.name}</h2>
+          <div className="w-8 h-px bg-slate-200 mx-auto" />
+          <p className="text-[10px] tracking-[0.4em] text-slate-400 uppercase font-light italic">
+            © {new Date().getFullYear()} — Programmatic Identity
+          </p>
+        </div>
       </footer>
     </div>
   );
