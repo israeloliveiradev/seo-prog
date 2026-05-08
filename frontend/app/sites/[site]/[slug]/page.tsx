@@ -20,13 +20,15 @@ export const revalidate = 3600;
 
 async function getTenantData(site: string, slug: string) {
   try {
-    console.log(`[DIAGNOSTICO] Buscando dados para Site: ${site}, Slug: ${slug}`);
+    // Sanitização para evitar problemas com DirectAdmin/Proxy headers
+    const cleanSite = site.split(':')[0].toLowerCase().trim();
+    console.log(`[DIAGNOSTICO] Buscando dados para Site: ${cleanSite}, Slug: ${slug}`);
     const supabase = createServiceClient();
 
     const { data: client, error: clientError } = await supabase
       .from('clients')
       .select('*')
-      .or(`subdomain.eq.${site},custom_domain.eq.${site}`)
+      .or(`subdomain.eq.${cleanSite},custom_domain.eq.${cleanSite}`)
       .single();
 
     if (clientError || !client) {

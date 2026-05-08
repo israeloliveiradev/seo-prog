@@ -40,7 +40,7 @@ export const PremiumTestimonials: React.FC<PremiumTestimonialsProps> = ({ testim
                  <img src={t.image} alt={t.name} className="w-full h-full object-cover" />
                ) : (
                  <div className="w-full h-full flex items-center justify-center font-black text-xl italic text-muted-foreground/20">
-                   {t.name[0]}
+                   {t?.name?.[0] || 'U'}
                  </div>
                )}
             </div>

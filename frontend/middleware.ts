@@ -34,13 +34,16 @@ export default async function middleware(req: NextRequest) {
     currentHost = hostname.split(':')[0].replace(`.${rootDomain}`, '');
   }
 
-  // Se for o domínio raiz (rankia.cloud) ou o dashboard (admin.rankia.cloud)
-  if (currentHost === rootDomain || currentHost === 'admin' || currentHost === hostname) {
+  // Lista de domínios que NÃO devem ser tratados como clientes (tenant)
+  const reservedSubdomains = ['admin', 'www', 'api', rootDomain];
+
+  // Se o host atual for um dos reservados ou o domínio raiz exato
+  if (reservedSubdomains.includes(currentHost) || currentHost === '') {
     // Se for o admin, podemos mandar para /admin (opcional)
     if (url.pathname.startsWith('/admin')) {
-        return NextResponse.next();
+      return NextResponse.next();
     }
-    // Caso contrário, segue o fluxo normal para o site principal (landing page do SaaS)
+    // Caso contrário, segue o fluxo normal para o site principal
     return NextResponse.next();
   }
 

@@ -43,7 +43,10 @@ export const ModernTemplate: React.FC<TemplateProps> = ({ client, page, pages })
 
   const testimonialsData = brand?.testimonials?.length > 0 
     ? brand.testimonials 
-    : config.sections.features.items; // Fallback temporário, deverá ser preenchido do DB real.
+    : [
+        { name: brand?.company_name || client.name, role: "Cliente Satisfeito", content: "Excelente atendimento e profissionalismo em cada detalhe do serviço prestado." },
+        { name: "João Silva", role: "Empresário", content: "Melhor custo-benefício da região. Recomendo fortemente pela agilidade." }
+      ];
 
   const mapAddress = brand?.address || 'São Paulo, Brasil';
   const publicMapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(mapAddress)}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
