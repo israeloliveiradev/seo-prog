@@ -14,7 +14,11 @@ export const Section: React.FC<SectionProps> = ({ children, className = '', id, 
   return (
     <section 
       id={id}
-      className={`py-20 md:py-40 px-6 md:px-10 relative overflow-hidden ${dark ? 'bg-background' : 'bg-transparent'} ${className}`}
+      style={{ 
+        paddingTop: 'var(--section-spacing, 5rem)', 
+        paddingBottom: 'var(--section-spacing, 5rem)' 
+      }}
+      className={`px-6 md:px-10 relative overflow-hidden ${dark ? 'bg-background' : 'bg-transparent'} ${className}`}
     >
       <div className="max-w-7xl mx-auto relative z-10">
         {children}

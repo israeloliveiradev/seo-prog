@@ -25,9 +25,6 @@ export const GoogleFontsLoader: React.FC<GoogleFontsLoaderProps> = ({ fontFamily
           :root {
             --font-family-dynamic: '${fontFamily}', sans-serif;
           }
-          body, html {
-            font-family: var(--font-family-dynamic) !important;
-          }
         `
       }} />
     </>

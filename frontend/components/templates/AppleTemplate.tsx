@@ -15,10 +15,12 @@ interface TemplateProps {
 export const AppleTemplate: React.FC<TemplateProps> = ({ client, page, pages }) => {
   const brand = client.brand_settings;
   const primaryColor = brand?.primary_color || '#0071e3';
+  const borderRadius = brand?.border_radius || '2.5rem';
+  const fontSans = brand?.font_family || 'Inter';
   
   return (
     <div className="bg-[#f5f5f7] text-[#1d1d1f] font-sans selection:bg-blue-200">
-      <GoogleFontsLoader fontFamily="Inter" />
+      <GoogleFontsLoader fontFamily={fontSans} />
       
       {/* HERO MINIMALISTA APPLE STYLE */}
       <header className="pt-32 pb-20 px-6 text-center">
@@ -35,8 +37,12 @@ export const AppleTemplate: React.FC<TemplateProps> = ({ client, page, pages }) 
             {page?.meta_description || brand?.description}
           </p>
           <div className="flex justify-center gap-8 pt-8">
-            <a href={`https://wa.me/${brand?.contact_whatsapp}`} style={{ color: primaryColor }} className="font-bold flex items-center gap-1 hover:underline text-lg group">
-              Solicitar Agora <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            <a 
+              href={`https://wa.me/${brand?.contact_whatsapp}`} 
+              style={{ color: primaryColor, borderRadius: borderRadius }} 
+              className="font-bold flex items-center gap-1 hover:underline text-lg group"
+            >
+              {brand?.cta_text || 'Solicitar Agora'} <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </a>
           </div>
         </motion.div>
@@ -47,7 +53,10 @@ export const AppleTemplate: React.FC<TemplateProps> = ({ client, page, pages }) 
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-4 h-auto md:h-[800px]">
           
           {/* Main Bento Card */}
-          <div className="md:col-span-2 md:row-span-2 bg-white rounded-[40px] p-12 flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-xl transition-shadow border border-black/5 relative group">
+          <div 
+            style={{ borderRadius: borderRadius }}
+            className="md:col-span-2 md:row-span-2 bg-white p-12 flex flex-col justify-between overflow-hidden shadow-sm hover:shadow-xl transition-shadow border border-black/5 relative group"
+          >
             <div className="space-y-4 relative z-10">
               <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">Destaque</span>
               <h2 className="text-4xl font-black tracking-tight">{page?.service_name} com perfeição absoluta.</h2>
@@ -58,14 +67,14 @@ export const AppleTemplate: React.FC<TemplateProps> = ({ client, page, pages }) 
           </div>
 
           {/* Small Bento Cards */}
-          <div className="bg-white rounded-[32px] p-8 flex flex-col justify-center items-center text-center space-y-4 shadow-sm border border-black/5">
+          <div style={{ borderRadius: borderRadius }} className="bg-white p-8 flex flex-col justify-center items-center text-center space-y-4 shadow-sm border border-black/5">
             <div className="w-12 h-12 rounded-full bg-[#f5f5f7] flex items-center justify-center">
               <Zap style={{ color: primaryColor }} />
             </div>
             <h3 className="font-bold text-lg leading-tight">Velocidade <br/> Extrema</h3>
           </div>
 
-          <div className="bg-white rounded-[32px] p-8 flex flex-col justify-center items-center text-center space-y-4 shadow-sm border border-black/5">
+          <div style={{ borderRadius: borderRadius }} className="bg-white p-8 flex flex-col justify-center items-center text-center space-y-4 shadow-sm border border-black/5">
             <div className="w-12 h-12 rounded-full bg-[#f5f5f7] flex items-center justify-center">
               <Shield style={{ color: primaryColor }} />
             </div>
@@ -73,7 +82,7 @@ export const AppleTemplate: React.FC<TemplateProps> = ({ client, page, pages }) 
           </div>
 
           {/* Horizontal Bento Card */}
-          <div className="md:col-span-2 bg-white rounded-[32px] p-10 flex flex-col md:flex-row items-center gap-8 shadow-sm border border-black/5">
+          <div style={{ borderRadius: borderRadius }} className="md:col-span-2 bg-white p-10 flex flex-col md:flex-row items-center gap-8 shadow-sm border border-black/5">
              <div className="flex-1 space-y-4">
                 <h3 className="text-2xl font-black">Disponível em toda {page?.location}</h3>
                 <p className="text-[#86868b] text-sm">Cobertura completa com unidades móveis equipadas.</p>

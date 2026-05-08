@@ -36,7 +36,7 @@ export const ModernTemplate: React.FC<TemplateProps> = ({ client, page, pages })
     title: page?.service_name || config.sections.hero.title,
     titleAccent: `em ${page?.location || 'sua região'}`,
     description: brand?.description || page?.meta_description || config.sections.hero.description,
-    ctaText: config.sections.hero.ctaPrimary.text,
+    ctaText: brand?.cta_text || config.sections.hero.ctaPrimary.text,
     ctaLink: `https://wa.me/${brand?.contact_whatsapp}`,
     imageUrl: brand?.hero_image || config.sections.hero.imageUrl
   };
@@ -88,14 +88,18 @@ export const ModernTemplate: React.FC<TemplateProps> = ({ client, page, pages })
         <BentoGrid items={config.sections.features.items} />
       </Section>
 
-      {/* 6. PROVA SOCIAL - Confiança */}
-      <Section id="testimonials">
-        <SectionHeader {...config.sections.testimonials} />
-        <PremiumTestimonials testimonials={testimonialsData} />
-      </Section>
+      {/* 6. PROVA SOCIAL - Confiança (Condicional) */}
+      {brand?.show_testimonials !== false && (
+        <Section id="testimonials">
+          <SectionHeader {...config.sections.testimonials} />
+          <PremiumTestimonials testimonials={testimonialsData} />
+        </Section>
+      )}
 
-      {/* 7. FAQ - Quebra de Objeções */}
-      <FAQSection config={config.sections.faq} faqs={brand?.faqs} />
+      {/* 7. FAQ - Quebra de Objeções (Condicional) */}
+      {brand?.show_faq !== false && (
+        <FAQSection config={config.sections.faq} faqs={brand?.faqs} />
+      )}
 
       {/* 8. POSICIONAMENTO LOCAL - SEO Local */}
       <Section id="location" dark>
@@ -148,7 +152,13 @@ export const ModernTemplate: React.FC<TemplateProps> = ({ client, page, pages })
       )}
 
       {/* 9. CTA FINAL */}
-      <FinalCTASection data={config.sections.finalCta} />
+      <FinalCTASection data={{
+        ...config.sections.finalCta,
+        ctaPrimary: {
+          ...config.sections.finalCta.ctaPrimary,
+          text: brand?.cta_text || config.sections.finalCta.ctaPrimary.text
+        }
+      }} />
 
       {/* 10. RODAPÉ */}
       <footer className="py-20 px-6 bg-background text-center space-y-10">

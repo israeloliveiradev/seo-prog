@@ -27,6 +27,7 @@ import { RetroTemplate } from '@/components/templates/RetroTemplate';
 import { LuxuryTemplate } from '@/components/templates/LuxuryTemplate';
 import { StartupTemplate } from '@/components/templates/StartupTemplate';
 import { CyberTemplate } from '@/components/templates/CyberTemplate';
+import { ModularTemplate } from '@/components/templates/ModularTemplate';
 
 interface SitePageProps {
   params: Promise<{ site: string; slug: string }>;
@@ -128,6 +129,7 @@ export default async function TenantDynamicPage({ params }: SitePageProps) {
     luxury: LuxuryTemplate,
     startup: StartupTemplate,
     cyber: CyberTemplate,
+    modular: ModularTemplate,
   };
 
   const TemplateComponent = templates[client.template_id || 'minimalist'] || MinimalistTemplate;

@@ -1,0 +1,123 @@
+'use client';
+
+import React from 'react';
+import { Section } from '../landing/Section';
+import { SectionHeader } from '../landing/SectionHeader';
+import { Check, Star, Zap, Shield, Smartphone, Globe, Box, Info } from 'lucide-react';
+import { motion } from 'framer-motion';
+
+// --- BIBLIOTECA DE ÍCONES PARA O USUÁRIO ESCOLHER ---
+const IconMap: Record<string, any> = {
+  zap: Zap,
+  shield: Shield,
+  phone: Smartphone,
+  globe: Globe,
+  box: Box,
+  info: Info,
+  star: Star,
+  check: Check
+};
+
+// --- BLOCO 1: HERO ADAPTATIVO ---
+export const HeroBlock = ({ data, brand }: any) => {
+  return (
+    <header className="pt-32 pb-20 px-6 text-center lg:text-left overflow-hidden">
+      <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
+          <div className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-black uppercase tracking-widest">
+             {data.badge || 'Novidade'}
+          </div>
+          <h1 className="text-5xl md:text-7xl font-black tracking-tighter leading-tight" style={{ fontFamily: 'var(--font-family-dynamic)' }}>
+            {data.title}
+          </h1>
+          <p className="text-xl text-slate-500 font-medium leading-relaxed">
+            {data.description}
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 pt-4">
+             <a href={data.ctaLink || '#'} style={{ backgroundColor: brand.primary_color, borderRadius: brand.border_radius }} className="h-16 px-10 flex items-center justify-center text-white font-black uppercase tracking-widest text-xs hover:brightness-110 transition-all shadow-xl shadow-primary/20">
+               {data.ctaText || brand.cta_text || 'Falar com Especialista'}
+             </a>
+          </div>
+        </motion.div>
+        <div className="relative">
+           <img 
+            src={data.imageUrl || brand.hero_image || 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=1200'} 
+            className="w-full h-[500px] object-cover shadow-2xl" 
+            style={{ borderRadius: brand.border_radius }} 
+            alt="Hero" 
+           />
+        </div>
+      </div>
+    </header>
+  );
+};
+
+// --- BLOCO 2: ESPECIFICAÇÕES TÉCNICAS (Ideal para Geladeiras/Eletro) ---
+export const SpecsBlock = ({ data, brand }: any) => {
+  return (
+    <Section className="bg-slate-50">
+       <SectionHeader 
+        title={data.title || "Especificações Técnicas"} 
+        subtitle={data.subtitle || "Tudo o que você precisa saber sobre o produto."} 
+       />
+       <div className="max-w-4xl mx-auto mt-12 grid grid-cols-1 md:grid-cols-2 gap-4">
+          {(data.items || []).map((item: any, i: number) => (
+             <div key={i} className="flex justify-between p-6 bg-white border border-slate-100" style={{ borderRadius: brand.border_radius }}>
+                <span className="font-black uppercase tracking-widest text-[10px] text-slate-400">{item.label}</span>
+                <span className="font-bold text-slate-900">{item.value}</span>
+             </div>
+          ))}
+       </div>
+    </Section>
+  );
+};
+
+// --- BLOCO 3: GALERIA DE PRODUTOS / SERVIÇOS (Ideal para Pet Shop) ---
+export const GalleryBlock = ({ data, brand }: any) => {
+  return (
+    <Section>
+       <SectionHeader 
+        title={data.title || "Nossos Destaques"} 
+        subtitle={data.subtitle || "Confira o que temos de melhor para oferecer."} 
+       />
+       <div className="max-w-7xl mx-auto mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {(data.items || []).map((item: any, i: number) => (
+             <div key={i} className="group overflow-hidden bg-white border border-slate-100 shadow-sm hover:shadow-xl transition-all" style={{ borderRadius: brand.border_radius }}>
+                <div className="aspect-square overflow-hidden">
+                   <img src={item.imageUrl} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={item.title} />
+                </div>
+                <div className="p-6 space-y-2">
+                   <h4 className="text-xl font-black tracking-tight">{item.title}</h4>
+                   <p className="text-sm text-slate-500 font-medium">{item.description}</p>
+                   {item.price && <p className="text-lg font-black pt-2" style={{ color: brand.primary_color }}>{item.price}</p>}
+                </div>
+             </div>
+          ))}
+       </div>
+    </Section>
+  );
+};
+
+// --- RENDERIZADOR PRINCIPAL ---
+export const BlockRenderer = ({ layout, sectionsData, brand, page }: any) => {
+  if (!layout || layout.length === 0) return null;
+
+  return (
+    <div className="modular-engine" style={{ '--primary-color': brand.primary_color } as any}>
+      {layout.map((blockId: string, index: number) => {
+        const blockData = sectionsData?.[blockId] || {};
+        
+        switch (blockData.type) {
+          case 'hero':
+            return <HeroBlock key={index} data={{ ...blockData, title: page?.service_name, description: page?.meta_description }} brand={brand} />;
+          case 'specs':
+            return <SpecsBlock key={index} data={blockData} brand={brand} />;
+          case 'gallery':
+            return <GalleryBlock key={index} data={blockData} brand={brand} />;
+          default:
+            return null;
+        }
+      })}
+    </div>
+  );
+};
