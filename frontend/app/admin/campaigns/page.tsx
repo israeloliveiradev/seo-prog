@@ -10,6 +10,10 @@ export default function OperationsPage() {
   const [campaigns, setCampaigns] = useState<any[]>([]);
   const [pages, setPages] = useState<any[]>([]);
   const [isLoadingPages, setIsLoadingPages] = useState(false);
+  const [editingCampaign, setEditingCampaign] = useState<any>(null);
+  const [editName, setEditName] = useState('');
+  const [editTargetAudience, setEditTargetAudience] = useState('');
+  const [editKeywords, setEditKeywords] = useState('');
 
   useEffect(() => {
     fetchCampaigns();
@@ -68,6 +72,38 @@ export default function OperationsPage() {
     }
   };
 
+  const handleEditClick = (camp: any) => {
+    setEditingCampaign(camp);
+    setEditName(camp.name);
+    setEditTargetAudience(camp.target_audience);
+    setEditKeywords(Array.isArray(camp.core_keywords) ? camp.core_keywords.join(', ') : '');
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editName || !editTargetAudience) return alert('Campos obrigatórios!');
+    try {
+      const keywordsArray = editKeywords.split(',').map(k => k.trim()).filter(k => k);
+      const res = await fetch('/api/admin/campaigns', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: editingCampaign.id,
+          name: editName,
+          target_audience: editTargetAudience,
+          core_keywords: keywordsArray
+        })
+      });
+      if (res.ok) {
+        setEditingCampaign(null);
+        fetchCampaigns();
+      } else {
+        alert('Erro ao salvar edição.');
+      }
+    } catch (err) {
+      alert('Erro de conexão ao tentar salvar.');
+    }
+  };
+
   return (
     <div className="space-y-10 animate-fadeIn">
       {/* Lista de Campanhas Ativas */}
@@ -78,8 +114,16 @@ export default function OperationsPage() {
              <div className="absolute inset-0 bg-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
              
              <button 
+                onClick={() => handleEditClick(camp)}
+                className="absolute top-4 right-12 w-6 h-6 rounded bg-indigo-500/10 text-indigo-400 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-indigo-500 hover:text-white text-[10px] z-10"
+                title="Editar Campanha"
+             >
+                ✎
+             </button>
+             <button 
                 onClick={() => handleDeleteCampaign(camp.id)}
                 className="absolute top-4 right-4 w-6 h-6 rounded bg-red-500/10 text-red-500 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white text-[10px] z-10"
+                title="Excluir Campanha"
              >
                 ✕
              </button>
@@ -100,6 +144,48 @@ export default function OperationsPage() {
           </div>
         ))}
       </section>
+
+      {/* Modal de Edição */}
+      {editingCampaign && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-6">
+          <div className="bg-[#0a0a0f] border border-white/10 p-8 rounded-2xl w-full max-w-lg shadow-2xl relative">
+            <button 
+              onClick={() => setEditingCampaign(null)}
+              className="absolute top-4 right-4 text-white/50 hover:text-white"
+            >✕</button>
+            <h3 className="text-xl font-black italic uppercase tracking-tighter text-white mb-6">Editar Campanha</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-1 block">Nome da Campanha</label>
+                <input 
+                  value={editName} onChange={e => setEditName(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm text-white"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-1 block">Público-Alvo</label>
+                <input 
+                  value={editTargetAudience} onChange={e => setEditTargetAudience(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm text-white"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-1 block">Palavras-chave Core (separadas por vírgula)</label>
+                <input 
+                  value={editKeywords} onChange={e => setEditKeywords(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm text-white"
+                />
+              </div>
+              <button 
+                onClick={handleSaveEdit}
+                className="w-full mt-4 py-3 bg-indigo-500 text-white font-black uppercase tracking-widest text-[10px] rounded-lg hover:bg-indigo-400 transition-all"
+              >
+                Salvar Alterações
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="flex justify-between items-end mt-12 border-t border-white/5 pt-10">
         <div>
