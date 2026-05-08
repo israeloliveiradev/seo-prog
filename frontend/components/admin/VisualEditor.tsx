@@ -27,7 +27,7 @@ import { CyberTemplate } from '../templates/CyberTemplate';
 import { ModularTemplate } from '../templates/ModularTemplate';
 import { GoogleFontsLoader } from '../templates/GoogleFontsLoader';
 
-import { ImageIcon, Layout, Palette, Type, Move, Settings2, Plus, Trash2, Globe, CheckCircle2, Zap, Star, Shield, MessageSquare, BarChart3, Eye, EyeOff, Smartphone, Laptop, Tablet, Save, ArrowLeft } from 'lucide-react';
+import { ImageIcon, Layout, Palette, Type, Move, Settings2, Plus, Trash2, Globe, CheckCircle2, Zap, Star, Shield, MessageSquare, BarChart3, Eye, EyeOff, Smartphone, Laptop, Tablet, Save, ArrowLeft, RotateCcw } from 'lucide-react';
 
 const hexToRgb = (hex: string) => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
