@@ -14,6 +14,7 @@ export default function OperationsPage() {
   const [editName, setEditName] = useState('');
   const [editTargetAudience, setEditTargetAudience] = useState('');
   const [editKeywords, setEditKeywords] = useState('');
+  const [editCustomPrompt, setEditCustomPrompt] = useState('');
 
   useEffect(() => {
     fetchCampaigns();
@@ -59,11 +60,17 @@ export default function OperationsPage() {
   };
 
   const handleRegenerate = async (id: string) => {
-    if (!confirm('Deseja realmente apagar todo o conteúdo atual e regenerar tudo com IA?')) return;
+    const customPromptValue = window.prompt('Deseja adicionar um tema ou instrução específica para esta regeneração? (Opcional)');
+    if (customPromptValue === null) return; // Cancelado
+
     try {
       const res = await fetch(`/api/admin/campaigns/regenerate?id=${id}`, {
         method: 'POST',
-        headers: { 'Authorization': 'Bearer authenticated' }
+        headers: { 
+            'Authorization': 'Bearer authenticated',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ prompt: customPromptValue })
       });
       if (res.ok) alert('🚀 Processamento reiniciado! O robô vai começar a reescrever as páginas.');
       else alert('Erro ao solicitar regeneração.');
@@ -77,6 +84,7 @@ export default function OperationsPage() {
     setEditName(camp.name);
     setEditTargetAudience(camp.target_audience);
     setEditKeywords(Array.isArray(camp.core_keywords) ? camp.core_keywords.join(', ') : '');
+    setEditCustomPrompt(camp.custom_prompt || '');
   };
 
   const handleSaveEdit = async () => {
@@ -90,7 +98,8 @@ export default function OperationsPage() {
           id: editingCampaign.id,
           name: editName,
           target_audience: editTargetAudience,
-          core_keywords: keywordsArray
+          core_keywords: keywordsArray,
+          custom_prompt: editCustomPrompt
         })
       });
       if (res.ok) {
@@ -174,6 +183,14 @@ export default function OperationsPage() {
                 <input 
                   value={editKeywords} onChange={e => setEditKeywords(e.target.value)}
                   className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm text-white"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-1 block">Tema da Empresa / Prompt Customizado</label>
+                <textarea 
+                  value={editCustomPrompt} onChange={e => setEditCustomPrompt(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm text-white resize-none"
+                  rows={2}
                 />
               </div>
               <button 

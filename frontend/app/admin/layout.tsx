@@ -41,7 +41,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const menuItems = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/admin' },
-    { name: 'Inquilinos', icon: Users, path: '/admin/clients' },
+    { name: 'Clientes', icon: Users, path: '/admin/clients' },
     { name: 'Operações', icon: Zap, path: '/admin/campaigns' },
   ];
 

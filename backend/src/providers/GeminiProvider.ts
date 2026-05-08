@@ -38,6 +38,7 @@ interface GenerateContentOptions {
   keywords: string[];
   clientName: string;
   targetAudience: string;
+  customPrompt?: string;
 }
 
 interface RetryOptions {
@@ -88,7 +89,7 @@ export class GeminiProvider {
    * Inclui retry interno com backoff exponencial.
    */
   async generatePageContent(options: GenerateContentOptions): Promise<string> {
-    const { serviceName, location, keywords, clientName, targetAudience } = options;
+    const { serviceName, location, keywords, clientName, targetAudience, customPrompt } = options;
 
     const userPrompt = `
 Gere conteúdo HTML completo e otimizado para SEO sobre:
@@ -99,7 +100,10 @@ SERVIÇO: ${serviceName}
 LOCALIDADE: ${location}
 PALAVRAS-CHAVE OBRIGATÓRIAS: ${keywords.join(', ')}
 
+${customPrompt ? `CONTEXTO ADICIONAL / TEMA DA EMPRESA: ${customPrompt}\n` : ''}
+
 Diretriz: O texto deve ser escrito em nome da empresa "${clientName}", focando nas dores do público "${targetAudience}".
+${customPrompt ? `IMPORTANTE: Respeite rigorosamente o tema/contexto adicional fornecido acima.\n` : ''}
 Lembre-se: retorne APENAS HTML semântico conforme as regras do sistema.
 Mínimo de 600 palavras. Inclua dados específicos sobre ${location} quando relevante.
     `.trim();

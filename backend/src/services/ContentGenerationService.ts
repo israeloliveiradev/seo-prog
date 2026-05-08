@@ -33,6 +33,7 @@ export class ContentGenerationService {
     const client = campaigns?.clients;
     const clientName = client?.name || 'Empresa Especializada';
     const targetAudience = campaigns?.target_audience || 'Público Geral';
+    const customPrompt = campaigns?.custom_prompt || '';
 
     logger.info(`Iniciando processamento para CLIENTE: ${clientName} - Página: "${service_name}" em "${location}"`, {
       id,
@@ -50,7 +51,8 @@ export class ContentGenerationService {
           location, 
           keywords,
           clientName,
-          targetAudience
+          targetAudience,
+          customPrompt
         }),
         this.gemini.generateMetaDescription(service_name, location),
       ]);

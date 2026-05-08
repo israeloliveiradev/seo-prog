@@ -11,6 +11,7 @@ const campaignSchema = z.object({
   client_id: z.string().uuid(),
   target_audience: z.string().min(5).max(200),
   core_keywords: z.array(z.string()).min(1),
+  custom_prompt: z.string().optional().nullable(),
 });
 
 export async function POST(req: NextRequest) {
@@ -22,7 +23,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Dados inválidos', details: parsed.error.issues }, { status: 400 });
     }
 
-    const { name, client_id, target_audience, core_keywords } = parsed.data;
+    const { name, client_id, target_audience, core_keywords, custom_prompt } = parsed.data;
     const supabase = createServiceClient();
 
     const { data, error } = await supabase
@@ -32,7 +33,8 @@ export async function POST(req: NextRequest) {
           name, 
           client_id,
           target_audience, 
-          core_keywords 
+          core_keywords,
+          custom_prompt 
         }
       ])
       .select()

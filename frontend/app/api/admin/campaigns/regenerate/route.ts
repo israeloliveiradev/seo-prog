@@ -10,12 +10,22 @@ export async function POST(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const campaignId = searchParams.get('id');
+    const body = await req.json().catch(() => ({}));
+    const { prompt } = body;
 
     if (!campaignId) {
       return NextResponse.json({ error: 'ID da campanha é obrigatório' }, { status: 400 });
     }
 
     const supabase = createServiceClient();
+
+    // Se houver um prompt, atualiza a campanha primeiro
+    if (prompt) {
+        await supabase
+          .from('campaigns')
+          .update({ custom_prompt: prompt })
+          .eq('id', campaignId);
+    }
 
     // Reseta o status de todas as páginas da campanha para PENDING
     const { error } = await supabase

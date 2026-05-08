@@ -42,6 +42,7 @@ export default function AdminClientsPage() {
         },
         body: JSON.stringify({
           ...newClient,
+          custom_domain: newClient.custom_domain.trim() || null,
           brand_settings: {
             company_name: newClient.name,
             primary_color: '#6366f1'
@@ -101,7 +102,7 @@ export default function AdminClientsPage() {
     <div className="min-h-screen bg-[#050508] text-white p-4 md:p-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-12">
         <div>
-          <h1 className="text-3xl md:text-4xl font-black uppercase italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-white/40">Inquilinos</h1>
+          <h1 className="text-3xl md:text-4xl font-black uppercase italic tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-white/40">Clientes</h1>
           <p className="text-white/40 text-xs md:text-sm mt-1">Gestão de infraestrutura e estética multi-tenant.</p>
         </div>
         <button 

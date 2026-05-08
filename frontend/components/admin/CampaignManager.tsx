@@ -13,6 +13,7 @@ export default function CampaignManager({ onCampaignCreated }: { onCampaignCreat
   const [name, setName] = useState('');
   const [targetAudience, setTargetAudience] = useState('');
   const [keywordsRaw, setKeywordsRaw] = useState('');
+  const [customPrompt, setCustomPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -52,7 +53,8 @@ export default function CampaignManager({ onCampaignCreated }: { onCampaignCreat
           name,
           client_id: clientId,
           target_audience: targetAudience,
-          core_keywords: keywords
+          core_keywords: keywords,
+          custom_prompt: customPrompt
         }),
       });
 
@@ -70,6 +72,7 @@ export default function CampaignManager({ onCampaignCreated }: { onCampaignCreat
       setName('');
       setTargetAudience('');
       setKeywordsRaw('');
+      setCustomPrompt('');
       setIsOpen(false);
       onCampaignCreated();
     } catch (err) {
@@ -203,6 +206,23 @@ export default function CampaignManager({ onCampaignCreated }: { onCampaignCreat
                       required
                     />
                     <div className="absolute bottom-0 left-5 right-5 h-px bg-gradient-to-r from-transparent via-fuchsia-500/40 to-transparent scale-x-0 group-focus-within:scale-x-100 transition-transform duration-500" />
+                  </div>
+                </div>
+
+                {/* Field: Custom Prompt / Context */}
+                <div className="group relative">
+                  <label className="text-[10px] font-black text-indigo-400/60 uppercase tracking-[0.2em] ml-1 mb-2 block">
+                    Tema da Empresa / Prompt Customizado
+                  </label>
+                  <div className="relative">
+                    <textarea 
+                      value={customPrompt} 
+                      onChange={e => setCustomPrompt(e.target.value)} 
+                      placeholder="Diga ao robô: 'Somos uma empresa sustentável', 'Foco em luxo', etc."
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-sm text-white placeholder:text-white/10 focus:outline-none focus:border-indigo-500 focus:bg-white/[0.08] transition-all resize-none"
+                      rows={2}
+                    />
+                    <div className="absolute bottom-0 left-5 right-5 h-px bg-gradient-to-r from-transparent via-amber-500/40 to-transparent scale-x-0 group-focus-within:scale-x-100 transition-transform duration-500" />
                   </div>
                 </div>
 

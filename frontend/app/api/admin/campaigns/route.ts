@@ -32,7 +32,7 @@ export async function GET() {
 export async function PUT(req: Request) {
   try {
     const body = await req.json();
-    const { id, name, target_audience, core_keywords } = body;
+    const { id, name, target_audience, core_keywords, custom_prompt } = body;
 
     if (!id || !name || !target_audience) {
       return NextResponse.json({ error: 'Campos obrigatórios ausentes' }, { status: 400 });
@@ -41,7 +41,7 @@ export async function PUT(req: Request) {
     const supabase = createServiceClient();
     const { error } = await supabase
       .from('campaigns')
-      .update({ name, target_audience, core_keywords })
+      .update({ name, target_audience, core_keywords, custom_prompt })
       .eq('id', id);
 
     if (error) {
