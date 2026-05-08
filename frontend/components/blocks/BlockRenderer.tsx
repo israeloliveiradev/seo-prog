@@ -216,16 +216,19 @@ export const BentoGridBlock = ({ data, brand }: any) => {
        <SectionHeader title={data.title || "Vantagens"} subtitle={data.subtitle || "Por que nos escolher?"} />
        <div className="max-w-7xl mx-auto mt-12">
           <BentoGrid>
-             {(data.items || []).map((item: any, i: number) => (
-                <BentoGridItem
-                  key={i}
-                  title={item.title}
-                  description={item.description}
-                  header={<div className="h-full w-full bg-slate-100 rounded-xl" />}
-                  icon={<Zap size={20} className="text-primary" />}
-                  className={i === 3 || i === 6 ? "md:col-span-2" : ""}
-                />
-             ))}
+             {(data.items || []).map((item: any, i: number) => {
+                const Icon = IconMap[item.icon || 'zap'] || Zap;
+                return (
+                  <BentoGridItem
+                    key={i}
+                    title={item.title}
+                    description={item.description}
+                    header={<div className="h-full w-full bg-slate-100/50 rounded-xl" />}
+                    icon={<Icon size={24} className="text-primary" style={{ color: brand.primary_color }} />}
+                    className={i === 0 || i === 3 ? "md:col-span-2" : "md:col-span-1"}
+                  />
+                );
+             })}
           </BentoGrid>
        </div>
     </Section>
