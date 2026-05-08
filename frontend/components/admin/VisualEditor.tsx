@@ -30,7 +30,7 @@ import { GoogleFontsLoader } from '../templates/GoogleFontsLoader';
 import { 
   Monitor, Tablet, Smartphone, Save, Palette, Type, Layout, 
   MessageSquare, Settings2, Image as ImageIcon, Eye, EyeOff, 
-  RotateCcw, MousePointer2, CheckCircle2, Move, ArrowUp, ArrowDown, Trash2, Plus
+  RotateCcw, MousePointer2, CheckCircle2, Move, ArrowUp, ArrowDown, Trash2, Plus, BarChart3
 } from 'lucide-react';
 
 interface VisualEditorProps {
