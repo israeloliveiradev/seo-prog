@@ -163,7 +163,7 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ client, onSave }) =>
     };
 
     if (presets[nicho]) {
-      setBrand(prev => ({ ...prev, ...presets[nicho] }));
+      setBrand((prev: any) => ({ ...prev, ...presets[nicho] }));
       setTemplate('modular');
       setHasChanges(true);
     }
