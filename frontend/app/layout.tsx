@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Space_Grotesk, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
+import { ThemeProvider } from '@/components/providers/theme-provider';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -16,11 +17,11 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Soluções de TI Profissionais | SEO Programático',
-    template: '%s | SEO Programático',
+    default: 'Rankia Pro | SEO Programático Industrial',
+    template: '%s | Rankia Pro',
   },
-  description: 'Encontre soluções profissionais de TI para sua empresa. Desenvolvimento de software, suporte técnico e cloud computing em todo o Brasil.',
-  keywords: ['desenvolvimento de software', 'suporte técnico', 'cloud computing', 'TI empresarial'],
+  description: 'Plataforma de SEO Programático de alta performance para escala massiva de landing pages.',
+  keywords: ['seo programático', 'landing pages', 'geração de conteúdo IA', 'rankia pro'],
   robots: {
     index: true,
     follow: true,
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
-    siteName: 'SEO Programático',
+    siteName: 'Rankia Pro',
   },
 };
 
@@ -38,9 +39,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR" className={`${spaceGrotesk.variable} ${jetbrainsMono.variable}`}>
-      <body className="antialiased bg-[#0a0a0f] text-white" suppressHydrationWarning>
-        {children}
+    <html lang="pt-BR" className={`${spaceGrotesk.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
+      <body className="antialiased min-h-screen bg-background text-foreground transition-colors duration-300">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

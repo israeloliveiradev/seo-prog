@@ -1,37 +1,74 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: var(--font-space), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+}
+
 /* =====================================================
-   Design System — SEO Programático Industrial
-   Tema: Dark Precision / Industrial Premium
+   Design System Variables
    ===================================================== */
-
 :root {
-  --color-bg:        #0a0a0f;
-  --color-surface:   #0e0e1a;
-  --color-border:    rgba(255, 255, 255, 0.06);
-  --color-text:      rgba(255, 255, 255, 0.9);
-  --color-muted:     rgba(255, 255, 255, 0.4);
-  --color-accent:    #6366f1;   /* indigo-500 */
-  --color-accent-h:  #818cf8;   /* indigo-400 hover */
-  --color-success:   #34d399;   /* emerald-400 */
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --border: #e2e8f0;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #6366f1;
+  --accent-foreground: #ffffff;
 }
 
-html {
-  font-family: var(--font-space), system-ui, sans-serif;
-  background-color: var(--color-bg);
-  color: var(--color-text);
-  -webkit-font-smoothing: antialiased;
-  scroll-behavior: smooth;
+.dark {
+  --background: #050508;
+  --foreground: #f8fafc;
+  --card: #0d0d16;
+  --card-foreground: #f8fafc;
+  --border: rgba(255, 255, 255, 0.06);
+  --muted: rgba(255, 255, 255, 0.03);
+  --muted-foreground: #94a3b8;
+  --accent: #818cf8;
+  --accent-foreground: #ffffff;
 }
 
 /* =====================================================
-   PROSE SEO — Estilos Adaptativos para Conteúdo de IA
+   Global Resets & Standards
+   ===================================================== */
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* =====================================================
+   PROSE SEO — Estilos Adaptativos
    ===================================================== */
 .prose-seo {
   max-width: 100%;
   line-height: 1.8;
   font-size: 1.1rem;
-  animation: fadeIn 0.8s ease-out;
 }
 
 .prose-seo h2 {
@@ -53,50 +90,29 @@ html {
 
 .prose-seo p {
   margin-bottom: 1.5rem;
-  opacity: 0.85;
-}
-
-.prose-seo ul, .prose-seo ol {
-  margin: 2rem 0;
-  padding-left: 1.5rem;
-}
-
-.prose-seo li {
-  margin-bottom: 0.75rem;
-  position: relative;
+  opacity: 0.9;
 }
 
 .prose-seo strong {
   font-weight: 700;
-  color: inherit;
 }
 
-/* Adaptabilidade para temas claros e escuros */
-.bg-black .prose-seo, .dark-theme .prose-seo {
-    color: rgba(255, 255, 255, 0.8);
+/* Scrollbar Custom */
+::-webkit-scrollbar {
+  width: 6px;
 }
 
-.bg-white .prose-seo, .light-theme .prose-seo {
-    color: #334155;
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.dark-theme .prose-seo h2, .dark-theme .prose-seo h3 { color: #fff; }
-
-.light-theme .prose-seo h2, .light-theme .prose-seo h3 { color: #0f172a; }
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+::-webkit-scrollbar-thumb {
+  background: var(--color-muted-foreground);
+  opacity: 0.2;
+  border-radius: 10px;
 }
 
-/* Scrollbar estilizada */
-::-webkit-scrollbar        { width: 6px; height: 6px; }
-::-webkit-scrollbar-track  { background: transparent; }
-::-webkit-scrollbar-thumb  { background: rgba(255,255,255,0.1); border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
-
-/* Seleção de texto */
 ::selection {
-  background: rgba(99, 102, 241, 0.3);
+  background: var(--color-accent);
   color: white;
 }

@@ -3,6 +3,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { GoogleFontsLoader } from './GoogleFontsLoader';
+import { HeroSection } from './landing/HeroSection';
+import { BentoGrid } from './landing/BentoGrid';
+import { PremiumTestimonials } from './landing/PremiumTestimonials';
+import { SectionHeader } from './landing/SectionHeader';
+import { Section } from './landing/Section';
+import { ThemeToggle } from '../theme-toggle';
+import { landingConfig } from '@/config/landing.config';
 
 interface TemplateProps {
   client: any;
@@ -12,177 +19,72 @@ interface TemplateProps {
 
 export const RetailTemplate: React.FC<TemplateProps> = ({ client, page, pages }) => {
   const brand = client.brand_settings;
-  const primaryColor = brand?.primary_color || '#e11d48';
   const fontFamily = brand?.font_family || 'Inter';
 
-  const mapAddress = brand?.address || 'São Paulo, Brasil';
-  const publicMapUrl = `https://maps.google.com/maps?q=${encodeURIComponent(mapAddress)}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
+  const heroData = {
+    badge: `Ofertas em ${page?.location || 'sua região'}`,
+    title: page?.service_name || "Economia e Qualidade",
+    titleAccent: brand?.company_name || client.name,
+    description: brand?.description || page?.meta_description || "As melhores ofertas e produtos selecionados para você e sua família.",
+    ctaText: "Ver Encarte",
+    ctaLink: `https://wa.me/${brand?.contact_whatsapp}`,
+    imageUrl: brand?.hero_image || "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2000"
+  };
+
+  const testimonialsData = brand?.testimonials?.length > 0 
+    ? brand.testimonials 
+    : landingConfig.testimonials.items;
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans overflow-x-hidden">
+    <div className="min-h-screen bg-background text-foreground font-sans selection:bg-red-500/30 overflow-x-hidden transition-colors duration-300">
       <GoogleFontsLoader fontFamily={fontFamily} />
       
-      {/* Top Banner */}
-      <motion.div 
-        initial={{ y: -50 }}
-        animate={{ y: 0 }}
-        className="bg-slate-900 text-white text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] py-2 text-center px-4"
-      >
-        Ofertas exclusivas em {page?.location || 'Toda a Rede'} • Confira Agora
-      </motion.div>
+      <div className="fixed top-6 right-6 z-[100]">
+        <ThemeToggle />
+      </div>
 
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-4 md:px-10 py-4 sticky top-0 z-50 shadow-sm">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-3">
-             <div className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white font-black text-sm md:text-base" style={{ backgroundColor: primaryColor }}>
-               {client.name[0]}
-             </div>
-             <span className="text-lg md:text-xl font-black tracking-tighter uppercase italic">{client.name}</span>
-          </motion.div>
-          <a href={`https://wa.me/${brand?.contact_whatsapp}`} className="px-4 md:px-6 py-2 rounded-lg border-2 text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all hover:bg-slate-900 hover:text-white" style={{ borderColor: primaryColor, color: primaryColor }}>WhatsApp</a>
-        </div>
-      </header>
+      <HeroSection {...heroData} />
 
-      {/* Hero */}
-      <section className="bg-white py-12 md:py-24 px-4 md:px-10">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-10 md:gap-20 items-center">
-          <motion.div 
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="space-y-6 md:space-y-10"
-          >
-             <h1 className="text-4xl md:text-7xl font-black tracking-tight leading-none text-slate-900">
-               {page?.service_name || 'Economia'} <br />
-               <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-orange-500">em {page?.location}</span>
-             </h1>
-             <p className="text-base md:text-lg text-slate-500 leading-relaxed max-w-lg">
-               {brand?.description || page?.meta_description}
-             </p>
-             <button className="w-full md:w-auto px-10 py-5 text-white font-black uppercase tracking-widest text-sm rounded-2xl shadow-xl transition-transform hover:scale-105 active:scale-95" style={{ backgroundColor: primaryColor }}>Ver Encarte</button>
-          </motion.div>
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            className="relative rounded-3xl md:rounded-[40px] overflow-hidden shadow-2xl aspect-video md:aspect-auto"
-          >
-             <img src={brand?.hero_image || "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1000"} className="w-full h-full object-cover" alt="Retail" />
-          </motion.div>
-        </div>
-      </section>
-
-      {/* SEO Content */}
       {page?.ai_content && (
-        <section className="py-16 md:py-24 px-4 md:px-10 bg-white">
+        <Section className="pt-0">
+          <SectionHeader 
+            badge="Destaques da Semana"
+            title="Tudo o que você precisa"
+            subtitle="Conheça nossa seleção exclusiva de produtos e serviços para sua casa."
+          />
           <div className="max-w-4xl mx-auto">
-            <div className="prose-seo" dangerouslySetInnerHTML={{ __html: page.ai_content }} />
+             <div className="prose-seo" dangerouslySetInnerHTML={{ __html: page.ai_content }} />
           </div>
-        </section>
+        </Section>
       )}
 
-      {/* Social Proof */}
-      <section className="py-20 md:py-32 px-4 md:px-10 bg-slate-50">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16 md:mb-24">
-            <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter mb-4">Aprovado por quem compra</h2>
-            <p className="text-slate-500 text-sm md:text-base">Confira o que os moradores de {page?.location} dizem sobre nós.</p>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {(brand?.testimonials?.length > 0 ? brand.testimonials : [1, 2, 3]).map((test: any, i: number) => (
-              <motion.div 
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm"
-              >
-                <div className="flex text-yellow-400 mb-4 text-sm">★★★★★</div>
-                <p className="text-slate-600 mb-6 italic">
-                  {test.content || `"Sempre encontro tudo o que preciso com os melhores preços. O atendimento em ${page?.location} é nota 10!"`}
-                </p>
-                <div className="flex items-center gap-3">
-                  {test.image_url ? (
-                    <img src={test.image_url} className="w-10 h-10 rounded-full object-cover border border-slate-100" alt={test.name} />
-                  ) : (
-                    <div className="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-[10px] text-slate-400 font-bold">
-                      {test.name ? test.name[0] : 'C'}
-                    </div>
-                  )}
-                  <div>
-                    <p className="font-bold text-xs uppercase tracking-widest text-slate-900">{test.name || 'Cliente Local'}</p>
-                    <p className="text-[10px] text-slate-400 uppercase font-black">{test.role || page?.location}</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <Section id="features" dark>
+        <SectionHeader 
+          badge="Por que o Varejo"
+          title="Vantagens Exclusivas"
+          subtitle="Preço baixo, qualidade e o melhor atendimento da região."
+        />
+        <BentoGrid items={landingConfig.features.items} />
+      </Section>
 
-      {/* Map & Location */}
-      <section className="py-20 md:py-32 px-4 md:px-10 bg-white border-t border-slate-100">
-        <div className="max-w-7xl mx-auto">
-           <div className="grid lg:grid-cols-3 gap-10 md:gap-20">
-              <div className="lg:col-span-1 space-y-10">
-                 <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter leading-none">Nossa Loja <br /><span style={{ color: primaryColor }}>{page?.location}</span></h2>
-                 <div className="space-y-6">
-                    <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100">
-                       <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-2">Endereço</p>
-                       <p className="font-bold text-slate-700">{brand?.address || 'Consulte nosso televendas'}</p>
-                    </div>
-                    <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100">
-                       <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-2">Horário</p>
-                       <p className="font-bold text-slate-700">Seg à Sáb: 08:00 - 20:00</p>
-                    </div>
-                 </div>
-              </div>
-              <div className="lg:col-span-2 h-[350px] md:h-[500px] rounded-3xl md:rounded-[40px] overflow-hidden border border-slate-200 shadow-xl">
-                 <iframe 
-                    width="100%" 
-                    height="100%" 
-                    frameBorder="0" 
-                    src={publicMapUrl}
-                    className="opacity-90 contrast-100"
-                 />
-              </div>
-           </div>
-        </div>
-      </section>
+      <Section id="testimonials">
+        <SectionHeader 
+          badge="Clientes Satisfeitos"
+          title="Quem economiza, aprova"
+          subtitle="Veja o que os moradores da região dizem sobre nossa loja."
+        />
+        <PremiumTestimonials testimonials={testimonialsData} />
+      </Section>
 
-      {/* Departments Grid */}
-      {pages && pages.length > 0 && (
-        <section className="py-24 px-4 md:px-10 bg-slate-50">
-          <div className="max-w-7xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-black mb-10 md:mb-16">Outras Unidades e Serviços</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-              {pages.map((p, i) => (
-                <motion.a 
-                  key={p.id} 
-                  href={`/${p.slug}`}
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
-                  className="p-6 bg-white rounded-2xl border border-slate-200 hover:shadow-xl transition-all group"
-                >
-                  <h3 className="font-bold text-slate-900 group-hover:text-red-600 transition-colors text-sm md:text-base">{p.service_name}</h3>
-                  <p className="text-[9px] md:text-[10px] text-slate-400 uppercase font-black tracking-widest">{p.location}</p>
-                </motion.a>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      <footer className="bg-slate-900 text-white py-16 md:py-24 px-4 md:px-10 text-center">
-         <p className="text-2xl md:text-3xl font-black italic mb-6">{client.name}</p>
-         <div className="flex flex-wrap justify-center gap-6 text-[9px] md:text-[10px] font-bold uppercase tracking-[0.3em] text-white/40 mb-10">
-            <a href="#">Suporte</a>
-            <a href="#">Carreiras</a>
-            <a href="#">Franquias</a>
+      {/* Footer simplificado seguindo o padrão único */}
+      <footer className="py-20 px-6 border-t border-border text-center space-y-10">
+         <div className="flex items-center justify-center gap-3">
+            <div className="w-1.5 h-8 bg-red-500 rounded-full" />
+            <span className="text-2xl font-black italic uppercase tracking-tighter">{client.name}</span>
          </div>
-         <p className="text-slate-500 text-[8px] md:text-[10px] font-bold uppercase tracking-widest">© {new Date().getFullYear()} — Todos os direitos reservados</p>
+         <p className="text-[10px] font-black uppercase tracking-[0.5em] text-muted-foreground/20 italic">
+           © {new Date().getFullYear()} {client.name} — Retail Excellence
+         </p>
       </footer>
     </div>
   );
