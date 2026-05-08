@@ -36,7 +36,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ delay: 0.1 }}
-        className={`text-3xl md:text-7xl font-black tracking-tighter leading-[0.9] md:leading-[0.8] ${
+        className={`text-[clamp(1.75rem,5vw,3.5rem)] md:text-[clamp(2.5rem,8vw,5.5rem)] font-black tracking-tighter leading-[1] md:leading-[0.9] ${
           gradient 
             ? 'text-transparent bg-clip-text bg-gradient-to-br from-foreground via-foreground to-foreground/40' 
             : 'text-foreground'

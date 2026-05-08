@@ -37,7 +37,7 @@ export const HeroBlock = ({ data, brand }: any) => {
           <div className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.2em]">
              {data.badge || 'Novidade'}
           </div>
-          <h1 className="text-4xl md:text-8xl font-black tracking-tighter leading-[0.9] uppercase italic" style={{ fontFamily: 'var(--font-sans)', color: isCyber ? 'white' : 'var(--foreground)' }}>
+          <h1 className="text-[clamp(2.5rem,8vw,5rem)] md:text-[clamp(3.5rem,10vw,7rem)] font-black tracking-tighter leading-[0.95] md:leading-[0.85] uppercase italic" style={{ fontFamily: 'var(--font-sans)', color: isCyber ? 'white' : 'var(--foreground)' }}>
             {data.title}
           </h1>
           <p className="text-xl opacity-60 font-medium leading-relaxed max-w-xl">
@@ -76,19 +76,26 @@ export const HeroBlock = ({ data, brand }: any) => {
   );
 };
 
-// --- BLOCO 2: ESPECIFICAÇÕES TÉCNICAS (Ideal para Geladeiras/Eletro) ---
+// --- BLOCO 2: ESPECIFICAÇÕES TÉCNICAS ---
 export const SpecsBlock = ({ data, brand }: any) => {
+  const isCyber = brand.design_mode === 'cyber';
   return (
-    <Section className="bg-slate-50">
+    <Section style={{ backgroundColor: isCyber ? '#0a0a0f' : 'transparent' }}>
        <SectionHeader 
         title={data.title || "Especificações Técnicas"} 
         subtitle={data.subtitle || "Tudo o que você precisa saber sobre o produto."} 
        />
        <div className="max-w-4xl mx-auto mt-12 grid grid-cols-1 md:grid-cols-2 gap-4">
           {(data.items || []).map((item: any, i: number) => (
-             <div key={i} className="flex justify-between p-6 bg-white border border-slate-100" style={{ borderRadius: brand.border_radius }}>
-                <span className="font-black uppercase tracking-widest text-[10px] text-slate-400">{item.label}</span>
-                <span className="font-bold text-slate-900">{item.value}</span>
+             <div 
+              key={i} 
+              className={`flex justify-between p-6 border transition-all ${
+                isCyber ? 'bg-white/5 border-white/10 text-white' : 'bg-background border-border shadow-sm'
+              }`} 
+              style={{ borderRadius: 'var(--border-radius)' }}
+             >
+                <span className={`font-black uppercase tracking-widest text-[10px] ${isCyber ? 'text-indigo-400' : 'text-muted-foreground'}`}>{item.label}</span>
+                <span className="font-bold">{item.value}</span>
              </div>
           ))}
        </div>
@@ -96,8 +103,9 @@ export const SpecsBlock = ({ data, brand }: any) => {
   );
 };
 
-// --- BLOCO 3: GALERIA DE PRODUTOS / SERVIÇOS (Ideal para Pet Shop) ---
+// --- BLOCO 3: GALERIA ---
 export const GalleryBlock = ({ data, brand }: any) => {
+  const isCyber = brand.design_mode === 'cyber';
   return (
     <Section>
        <SectionHeader 
@@ -106,14 +114,21 @@ export const GalleryBlock = ({ data, brand }: any) => {
        />
        <div className="max-w-7xl mx-auto mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {(data.items || []).map((item: any, i: number) => (
-             <div key={i} className="group overflow-hidden bg-white border border-slate-100 shadow-sm hover:shadow-xl transition-all" style={{ borderRadius: brand.border_radius }}>
-                <div className="aspect-square overflow-hidden">
+             <div 
+              key={i} 
+              className={`group overflow-hidden border transition-all hover:-translate-y-2 ${
+                isCyber ? 'bg-white/5 border-white/10 text-white shadow-[0_20px_40px_rgba(0,0,0,0.4)]' : 'bg-background border-border shadow-sm hover:shadow-xl'
+              }`} 
+              style={{ borderRadius: 'var(--border-radius)' }}
+             >
+                <div className="aspect-square overflow-hidden relative">
                    <img src={item.imageUrl} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={item.title} />
+                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
                 <div className="p-6 space-y-2">
                    <h4 className="text-xl font-black tracking-tight">{item.title}</h4>
-                   <p className="text-sm text-slate-500 font-medium">{item.description}</p>
-                   {item.price && <p className="text-lg font-black pt-2" style={{ color: brand.primary_color }}>{item.price}</p>}
+                   <p className={`text-sm font-medium ${isCyber ? 'text-white/40' : 'text-muted-foreground'}`}>{item.description}</p>
+                   {item.price && <p className="text-lg font-black pt-2" style={{ color: 'var(--primary)' }}>{item.price}</p>}
                 </div>
              </div>
           ))}
@@ -212,7 +227,7 @@ export const FAQBlock = ({ data, brand }: any) => {
 // --- BLOCO 7: BENTO GRID ---
 export const BentoGridBlock = ({ data, brand }: any) => {
   return (
-    <Section>
+    <Section style={{ paddingTop: 'var(--section-spacing)', paddingBottom: 'var(--section-spacing)' }}>
        <SectionHeader title={data.title || "Vantagens"} subtitle={data.subtitle || "Por que nos escolher?"} />
        <div className="max-w-7xl mx-auto mt-12">
           <BentoGrid>

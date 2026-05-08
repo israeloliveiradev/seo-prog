@@ -15,7 +15,13 @@ export const ModularTemplate: React.FC<TemplateProps> = ({ client, page, pages }
   const designMode = brand?.design_mode || 'modern';
   
   return (
-    <div className={`min-h-screen transition-colors duration-500 font-sans ${designMode === 'cyber' ? 'bg-[#050508] text-white' : 'bg-background text-foreground'}`}>
+    <div 
+      className={`min-h-screen transition-colors duration-500 font-sans ${designMode === 'cyber' ? 'bg-[#050508] text-white' : ''}`}
+      style={{ 
+        backgroundColor: designMode === 'cyber' ? undefined : brand?.bg_color,
+        color: designMode === 'cyber' ? undefined : brand?.text_color
+      }}
+    >
       <GoogleFontsLoader fontFamily={brand?.font_family || 'Inter'} />
       {brand?.font_secondary && brand?.font_secondary !== brand?.font_family && (
         <GoogleFontsLoader fontFamily={brand.font_secondary} />

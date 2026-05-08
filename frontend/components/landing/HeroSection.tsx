@@ -56,14 +56,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </motion.div>
           )}
 
-          <h1 className="text-[12vw] md:text-[8vw] lg:text-[7vw] font-black tracking-tighter leading-[0.8] md:leading-[0.75] uppercase italic text-foreground">
+          <h1 className="text-[clamp(2.5rem,8vw,5rem)] md:text-[clamp(4rem,10vw,8rem)] font-black tracking-tighter leading-[0.9] md:leading-[0.85] uppercase italic text-foreground">
             {title} <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent via-foreground to-accent">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-foreground to-primary">
               {titleAccent}
             </span>
           </h1>
 
-          <p className="text-lg md:text-2xl text-muted-foreground font-light max-w-3xl mx-auto leading-relaxed italic">
+          <p className="text-lg md:text-xl text-muted-foreground font-light max-w-3xl mx-auto leading-relaxed italic opacity-80">
             {description}
           </p>
 
@@ -72,7 +72,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               href={ctaLink}
-              className="group relative px-10 py-5 bg-foreground text-background font-black uppercase tracking-[0.2em] text-xs rounded-full flex items-center gap-3 transition-all shadow-xl shadow-accent/20"
+              className="group relative px-10 py-5 bg-primary text-white font-black uppercase tracking-[0.2em] text-xs rounded-xl flex items-center gap-3 transition-all shadow-xl shadow-primary/20"
+              style={{ borderRadius: 'var(--border-radius)' }}
             >
               {ctaText}
               <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />

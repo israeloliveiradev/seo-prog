@@ -8,15 +8,17 @@ interface SectionProps {
   className?: string;
   id?: string;
   dark?: boolean;
+  style?: React.CSSProperties;
 }
 
-export const Section: React.FC<SectionProps> = ({ children, className = '', id, dark = false }) => {
+export const Section: React.FC<SectionProps> = ({ children, className = '', id, dark = false, style }) => {
   return (
     <section 
       id={id}
       style={{ 
         paddingTop: 'var(--section-spacing, 5rem)', 
-        paddingBottom: 'var(--section-spacing, 5rem)' 
+        paddingBottom: 'var(--section-spacing, 5rem)',
+        ...style 
       }}
       className={`px-6 md:px-10 relative overflow-hidden ${dark ? 'bg-background' : 'bg-transparent'} ${className}`}
     >
