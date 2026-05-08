@@ -316,22 +316,55 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ client, onSave, onCl
           {/* EDIÇÃO DINÂMICA DE BLOCOS */}
           {activeView.startsWith('edit-') && (
             <ViewContainer title={`Editar ${activeView.split('-')[1]}`} onBack={popView}>
-               <Input 
-                label="Título Principal" 
-                value={brand.sections_data?.[activeView.split('-')[1]]?.title || ''} 
-                onChange={(e) => handleSectionDataChange(activeView.split('-')[1], 'title', e.target.value)} 
-               />
-               <Input 
-                label="Badge / Subtítulo" 
-                value={brand.sections_data?.[activeView.split('-')[1]]?.badge || ''} 
-                onChange={(e) => handleSectionDataChange(activeView.split('-')[1], 'badge', e.target.value)} 
-               />
-               <Input 
-                label="Descrição" 
-                textarea
-                value={brand.sections_data?.[activeView.split('-')[1]]?.description || ''} 
-                onChange={(e) => handleSectionDataChange(activeView.split('-')[1], 'description', e.target.value)} 
-               />
+               <div className="space-y-6">
+                 <Input 
+                  label="Título Principal" 
+                  value={brand.sections_data?.[activeView.split('-')[1]]?.title || ''} 
+                  onChange={(e) => handleSectionDataChange(activeView.split('-')[1], 'title', e.target.value)} 
+                 />
+                 <Input 
+                  label="Badge / Subtítulo" 
+                  value={brand.sections_data?.[activeView.split('-')[1]]?.badge || ''} 
+                  onChange={(e) => handleSectionDataChange(activeView.split('-')[1], 'badge', e.target.value)} 
+                 />
+                 <Input 
+                  label="Descrição" 
+                  textarea
+                  value={brand.sections_data?.[activeView.split('-')[1]]?.description || ''} 
+                  onChange={(e) => handleSectionDataChange(activeView.split('-')[1], 'description', e.target.value)} 
+                 />
+
+                 {/* Lista de Itens (Puzzle Logic) */}
+                 {(brand.sections_data?.[activeView.split('-')[1]]?.items || []).length > 0 && (
+                    <div className="pt-6 border-t border-white/5 space-y-4">
+                       <h4 className="text-[10px] font-black uppercase text-indigo-400">Itens do Bloco</h4>
+                       {brand.sections_data?.[activeView.split('-')[1]]?.items.map((item: any, idx: number) => (
+                          <div key={idx} className="p-4 bg-white/5 border border-white/10 rounded-2xl space-y-3 relative group">
+                             <Input 
+                                label={activeView.includes('specs') ? "Etiqueta" : "Título do Item"} 
+                                value={item.title || item.label || ''} 
+                                onChange={(e) => {
+                                   const newItems = [...brand.sections_data[activeView.split('-')[1]].items];
+                                   if (activeView.includes('specs')) newItems[idx].label = e.target.value;
+                                   else newItems[idx].title = e.target.value;
+                                   handleSectionDataChange(activeView.split('-')[1], 'items', newItems);
+                                }} 
+                             />
+                             <Input 
+                                label={activeView.includes('specs') ? "Valor" : "Descrição"} 
+                                value={item.value || item.description || ''} 
+                                onChange={(e) => {
+                                   const newItems = [...brand.sections_data[activeView.split('-')[1]].items];
+                                   if (activeView.includes('specs')) newItems[idx].value = e.target.value;
+                                   else newItems[idx].description = e.target.value;
+                                   handleSectionDataChange(activeView.split('-')[1], 'items', newItems);
+                                }} 
+                             />
+                          </div>
+                       ))}
+                    </div>
+                 )}
+               </div>
             </ViewContainer>
           )}
 
