@@ -2,12 +2,15 @@
 
 import React from 'react';
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
   label?: string;
   error?: string;
+  textarea?: boolean;
 }
 
-export const Input: React.FC<InputProps> = ({ label, error, className = '', ...props }) => {
+export const Input: React.FC<InputProps> = ({ label, error, textarea, className = '', ...props }) => {
+  const Component = textarea ? 'textarea' : 'input';
+  
   return (
     <div className="space-y-2 w-full">
       {label && (
@@ -15,9 +18,9 @@ export const Input: React.FC<InputProps> = ({ label, error, className = '', ...p
           {label}
         </label>
       )}
-      <input 
-        className={`w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3.5 text-sm outline-none transition-all focus:border-indigo-500 focus:bg-white/[0.05] placeholder:text-white/20 ${error ? 'border-red-500/50' : ''} ${className}`}
-        {...props}
+      <Component 
+        className={`w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3.5 text-sm outline-none transition-all focus:border-indigo-500 focus:bg-white/[0.05] placeholder:text-white/20 ${textarea ? 'min-h-[120px] resize-none' : ''} ${error ? 'border-red-500/50' : ''} ${className}`}
+        {...(props as any)}
       />
       {error && <p className="text-[10px] text-red-500 font-bold ml-1">{error}</p>}
     </div>
