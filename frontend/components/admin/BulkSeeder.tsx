@@ -12,8 +12,13 @@ export default function BulkSeeder() {
 
   useEffect(() => {
     const fetchCampaigns = async () => {
-      const { data } = await supabase.from('campaigns').select('id, name');
-      setCampaigns(data || []);
+      try {
+        const res = await fetch('/api/admin/campaigns');
+        const data = await res.json();
+        setCampaigns(data.campaigns || []);
+      } catch (err) {
+        console.error('Erro ao buscar campanhas', err);
+      }
     };
     fetchCampaigns();
   }, []);

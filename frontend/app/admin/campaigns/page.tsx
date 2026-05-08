@@ -17,21 +17,26 @@ export default function OperationsPage() {
   }, [activeTab]);
 
   const fetchCampaigns = async () => {
-    const { data } = await supabase
-      .from('campaigns')
-      .select('*, clients(name, subdomain)')
-      .order('created_at', { ascending: false });
-    setCampaigns(data || []);
+    try {
+      const res = await fetch('/api/admin/campaigns');
+      const data = await res.json();
+      setCampaigns(data.campaigns || []);
+    } catch (err) {
+      console.error('Erro ao buscar campanhas', err);
+      setCampaigns([]);
+    }
   };
 
   const fetchLatestPages = async () => {
     setIsLoadingPages(true);
-    const { data } = await supabase
-      .from('generated_pages')
-      .select('*, campaigns(name, clients(subdomain))')
-      .order('created_at', { ascending: false })
-      .limit(50);
-    setPages(data || []);
+    try {
+      const res = await fetch('/api/admin/pages');
+      const data = await res.json();
+      setPages(data.pages || []);
+    } catch (err) {
+      console.error('Erro ao buscar páginas', err);
+      setPages([]);
+    }
     setIsLoadingPages(false);
   };
 
