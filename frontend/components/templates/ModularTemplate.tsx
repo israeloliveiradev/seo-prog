@@ -12,16 +12,6 @@ interface TemplateProps {
 
 export const ModularTemplate: React.FC<TemplateProps> = ({ client, page, pages }) => {
   const brand = client.brand_settings;
-  const layout = brand?.layout_order || ['hero', 'specs', 'gallery'];
-  const sectionsData = brand?.sections_data || {
-    hero: { type: 'hero' },
-    specs: { 
-      type: 'specs', 
-      title: 'Especificações Técnicas',
-      items: [
-        { label: 'Garantia', value: '12 Meses' },
-        { label: 'Material', value: 'Aço Escovado' },
-        { label: 'Eficiência', value: 'Classe A' }
   const designMode = brand?.design_mode || 'modern';
   
   return (
