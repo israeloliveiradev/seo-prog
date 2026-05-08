@@ -273,7 +273,26 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ client, onSave, onCl
 
           {/* VISÃO SEÇÕES */}
           {activeView === 'sections' && (
-            <ViewContainer title="Seções" onBack={popView}>
+            <ViewContainer title="Estrutura da Página" onBack={popView}>
+               <div className="space-y-4 mb-8">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-white/20">Template Base</p>
+                  <div className="grid grid-cols-2 gap-2">
+                     {[
+                       { id: 'modular', name: 'Modular (Canvas)' },
+                       { id: 'modern', name: 'Moderno' },
+                       { id: 'apple', name: 'Premium (Apple)' }
+                     ].map(t => (
+                       <button 
+                        key={t.id} 
+                        onClick={() => setTemplate(t.id)}
+                        className={`p-3 border rounded-xl text-[10px] font-bold uppercase transition-all ${template === t.id ? 'border-indigo-500 bg-indigo-500 text-white' : 'border-white/10 text-white/40 hover:bg-white/5'}`}
+                       >
+                         {t.name}
+                       </button>
+                     ))}
+                  </div>
+               </div>
+
                <p className="text-[10px] text-white/30 italic mb-4">Gerencie a ordem e blocos da página.</p>
                <div className="space-y-3">
                  {brand.layout_order.map((id: string, i: number) => (
