@@ -68,13 +68,25 @@ export const BentoGridItem = ({
 export const BentoGrid = ({
   className,
   children,
+  items,
 }: {
   className?: string;
   children?: React.ReactNode;
+  items?: any[];
 }) => {
   return (
     <div className={`grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 ${className}`}>
       {children}
+      {items && items.map((item, idx) => (
+        <BentoGridItem
+          key={idx}
+          title={item.title}
+          description={item.description}
+          icon={item.icon || <Icons.Zap size={24} />}
+          className={item.size === 'large' ? 'md:col-span-2 md:row-span-2' : item.size === 'wide' ? 'md:col-span-2' : 'md:col-span-1'}
+          color={item.color}
+        />
+      ))}
     </div>
   );
 };
