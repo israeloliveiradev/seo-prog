@@ -25,9 +25,12 @@ export default async function middleware(req: NextRequest) {
   // Extrai o subdomínio ou domínio customizado
   let currentHost = '';
   if (isLocalhost) {
-    // No localhost, simulamos via subdomínio (ex: cliente1.localhost:3000)
-    currentHost = hostname.replace(`.localhost:${url.port}`, '');
+    // No localhost, removemos o sufixo .localhost e a porta
+    // Ex: cliente.localhost:3000 -> cliente
+    currentHost = hostname.split(':')[0].replace('.localhost', '');
   } else {
+    // Em produção, removemos o domínio raiz
+    // Ex: cliente.rankia.cloud -> cliente
     currentHost = hostname.replace(`.${rootDomain}`, '');
   }
 
