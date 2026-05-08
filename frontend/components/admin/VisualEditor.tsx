@@ -55,15 +55,18 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ client, onSave }) =>
     hero_image: '',
     logo_url: '',
     layout_order: ['hero', 'specs', 'gallery'],
-    show_testimonials: true,
-    show_faq: true,
-    show_stats: true,
+    design_mode: 'modern', // 'modern', 'glass', 'luxury', 'cyber'
+    border_radius: '1rem',
+    section_spacing: '5rem',
+    shadow_intensity: 'soft',
     ...client.brand_settings
   });
   
   const [customDomain, setCustomDomain] = useState(client.custom_domain || '');
   const [activeTab, setActiveTab] = useState('identity');
+  const [editingBlock, setEditingBlock] = useState<string | null>(null);
   const [viewport, setViewport] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
+  const [previewTheme, setPreviewTheme] = useState<'light' | 'dark'>('light');
   const [saving, setSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
 
@@ -96,14 +99,16 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ client, onSave }) =>
 
   // Injeção de CSS Variables para o Preview
   const previewStyles = useMemo(() => ({
-    '--primary-color': brand.primary_color,
-    '--secondary-color': brand.secondary_color,
-    '--accent-color': brand.accent_color,
-    '--bg-color': brand.bg_color,
-    '--text-color': brand.text_color,
+    '--primary': brand.primary_color,
+    '--secondary': brand.secondary_color,
+    '--accent': brand.accent_color,
+    '--background': brand.bg_color,
+    '--foreground': brand.text_color,
     '--border-radius': brand.border_radius,
     '--font-sans': brand.font_family,
     '--font-serif': brand.font_secondary,
+    '--shadow-sm': brand.shadow_intensity === 'none' ? 'none' : brand.shadow_intensity === 'soft' ? '0 2px 4px rgba(0,0,0,0.05)' : '0 10px 20px rgba(0,0,0,0.1)',
+    '--shadow-xl': brand.shadow_intensity === 'none' ? 'none' : brand.shadow_intensity === 'soft' ? '0 20px 40px -10px rgba(0,0,0,0.1)' : '0 40px 80px -15px rgba(0,0,0,0.3)',
   } as React.CSSProperties), [brand]);
 
   const handleChange = (field: string, value: any) => {
@@ -112,6 +117,56 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ client, onSave }) =>
       [field]: value
     }));
     setHasChanges(true);
+  };
+
+  const handleSectionDataChange = (blockId: string, field: string, value: any) => {
+    setBrand((prev: any) => {
+      const newSectionsData = { ...prev.sections_data };
+      newSectionsData[blockId] = {
+        ...newSectionsData[blockId],
+        [field]: value
+      };
+      return { ...prev, sections_data: newSectionsData };
+    });
+    setHasChanges(true);
+  };
+
+  const applyPreset = (nicho: string) => {
+    const presets: Record<string, any> = {
+      petshop: {
+        design_mode: 'glass',
+        primary_color: '#fb923c',
+        layout_order: ['hero', 'gallery', 'trust', 'faq'],
+        sections_data: {
+          hero: { type: 'hero', badge: '🐾 Cuidado com Amor', title: 'O Melhor Amigo do seu Pet' },
+          gallery: { type: 'gallery', title: 'Nossos Clientes Felizes' },
+          trust: { type: 'trust', title: 'Certificações de Qualidade' }
+        }
+      },
+      geladeira: {
+        design_mode: 'modern',
+        primary_color: '#0ea5e9',
+        layout_order: ['hero', 'specs', 'trust', 'pricing'],
+        sections_data: {
+          hero: { type: 'hero', badge: '❄️ Refrigeração Pro', title: 'Assistência Técnica de Geladeiras' },
+          specs: { type: 'specs', title: 'Nossos Serviços Técnicos' }
+        }
+      },
+      saas: {
+        design_mode: 'cyber',
+        primary_color: '#818cf8',
+        layout_order: ['hero', 'trust', 'pricing', 'faq'],
+        sections_data: {
+          hero: { type: 'hero', badge: '🚀 Next Gen UI', title: 'Escale seu Negócio com IA' }
+        }
+      }
+    };
+
+    if (presets[nicho]) {
+      setBrand(prev => ({ ...prev, ...presets[nicho] }));
+      setTemplate('modular');
+      setHasChanges(true);
+    }
   };
 
   const handleSave = async () => {
@@ -153,11 +208,12 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ client, onSave }) =>
         <nav className="flex overflow-x-auto no-scrollbar p-2 bg-white/5 border-b border-white/5">
           {[
             { id: 'identity', icon: ImageIcon, label: 'Identidade' },
+            { id: 'layout', icon: Move, label: 'Estrutura' },
+            { id: 'content', icon: Settings2, label: 'Conteúdo' },
             { id: 'colors', icon: Palette, label: 'Cores' },
             { id: 'typography', icon: Type, label: 'Texto' },
-            { id: 'layout', icon: Move, label: 'Estrutura' },
-            { id: 'sections', icon: Settings2, label: 'Seções' },
             { id: 'templates', icon: Layout, label: 'Temas' },
+            { id: 'seo', icon: Globe, label: 'SEO' },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -198,6 +254,21 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ client, onSave }) =>
                 value={brand.cta_text} 
                 onChange={(e) => handleChange('cta_text', e.target.value)} 
               />
+              
+              <div className="pt-4 space-y-3">
+                 <label className="text-[10px] font-black uppercase tracking-widest text-indigo-400 block">Presets Rápidos</label>
+                 <div className="grid grid-cols-3 gap-2">
+                    {['petshop', 'geladeira', 'saas'].map(n => (
+                       <button 
+                        key={n} 
+                        onClick={() => applyPreset(n)}
+                        className="py-2 px-1 bg-white/5 border border-white/10 rounded-lg text-[9px] font-black uppercase hover:bg-indigo-500 hover:text-white transition-all"
+                       >
+                         {n}
+                       </button>
+                    ))}
+                 </div>
+              </div>
             </div>
           )}
 
@@ -233,15 +304,36 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ client, onSave }) =>
               </div>
 
               <div className="space-y-3 pt-4">
-                 <label className="text-[10px] font-black uppercase tracking-widest text-white/40 block ml-1">Arredondamento (Radius)</label>
-                 <div className="grid grid-cols-4 gap-2">
-                    {['0px', '0.5rem', '1.5rem', '999px'].map((r) => (
+                 <label className="text-[10px] font-black uppercase tracking-widest text-white/40 block ml-1">Estética do Site (Design Mode)</label>
+                 <div className="grid grid-cols-2 gap-2">
+                    {[
+                      { id: 'modern', label: 'Modern Clean', icon: Layout },
+                      { id: 'glass', label: 'Glassmorphism', icon: Zap },
+                      { id: 'luxury', label: 'Minimal Luxury', icon: Star },
+                      { id: 'cyber', label: 'Cyber Tech', icon: Shield },
+                    ].map((m) => (
                        <button
-                          key={r}
-                          onClick={() => handleChange('border_radius', r)}
-                          className={`py-3 border rounded-lg text-[10px] font-bold transition-all ${brand.border_radius === r ? 'border-indigo-500 bg-indigo-500 text-white' : 'border-white/10 text-white/40 hover:border-white/20'}`}
+                          key={m.id}
+                          onClick={() => handleChange('design_mode', m.id)}
+                          className={`p-4 border rounded-2xl flex flex-col items-center gap-2 transition-all ${brand.design_mode === m.id ? 'border-indigo-500 bg-indigo-500 text-white' : 'border-white/10 text-white/40 hover:border-white/20'}`}
                        >
-                          {r === '0px' ? 'SQ' : r === '999px' ? 'RD' : r.split('.')[0] + 'PX'}
+                          <m.icon size={16} />
+                          <span className="text-[9px] font-bold uppercase">{m.label}</span>
+                       </button>
+                    ))}
+                 </div>
+              </div>
+
+              <div className="space-y-3 pt-4">
+                 <label className="text-[10px] font-black uppercase tracking-widest text-white/40 block ml-1">Intensidade de Sombras</label>
+                 <div className="grid grid-cols-3 gap-2">
+                    {['none', 'soft', 'deep'].map((s) => (
+                       <button
+                          key={s}
+                          onClick={() => handleChange('shadow_intensity', s)}
+                          className={`py-3 border rounded-lg text-[10px] font-bold transition-all ${brand.shadow_intensity === s ? 'border-indigo-500 bg-indigo-500 text-white' : 'border-white/10 text-white/40 hover:border-white/20'}`}
+                       >
+                          {s.toUpperCase()}
                        </button>
                     ))}
                  </div>
@@ -332,45 +424,145 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ client, onSave }) =>
                 ))}
               </div>
 
-              <div className="pt-4">
-                 <button 
-                  onClick={() => {
-                    const blockId = prompt('Nome do novo bloco (ex: specs, gallery, hero):');
-                    if (blockId) {
-                      const newOrder = [...(brand.layout_order || []), blockId];
-                      handleChange('layout_order', newOrder);
-                    }
-                  }}
-                  className="w-full py-4 border-2 border-dashed border-white/10 rounded-2xl flex items-center justify-center gap-2 text-white/20 hover:text-indigo-400 hover:border-indigo-500/50 transition-all"
-                 >
-                   <Plus size={16} /> <span className="text-[10px] font-black uppercase tracking-widest">Adicionar Bloco</span>
-                 </button>
+              <div className="pt-4 grid grid-cols-2 gap-2">
+                 {[
+                   { id: 'hero', label: 'Hero (Início)', icon: ImageIcon },
+                   { id: 'specs', label: 'Especificações', icon: Settings2 },
+                   { id: 'gallery', label: 'Galeria/Catálogo', icon: LayoutGrid },
+                   { id: 'pricing', label: 'Preços/Planos', icon: CreditCard },
+                   { id: 'trust', label: 'Logos/Confiança', icon: Shield },
+                   { id: 'faq', label: 'Perguntas (FAQ)', icon: MessageSquare },
+                 ].map((block) => (
+                    <button 
+                      key={block.id}
+                      onClick={() => {
+                        const newOrder = [...(brand.layout_order || []), block.id];
+                        // Inicializa dados básicos para o bloco se não existirem
+                        const newSectionsData = { ...brand.sections_data };
+                        if (!newSectionsData[block.id]) {
+                          newSectionsData[block.id] = { type: block.id, title: '', items: [] };
+                        }
+                        handleChange('layout_order', newOrder);
+                        handleChange('sections_data', newSectionsData);
+                      }}
+                      className="p-3 border border-white/5 bg-white/[0.02] rounded-xl flex flex-col items-center gap-2 text-white/30 hover:text-indigo-400 hover:border-indigo-500/30 hover:bg-indigo-500/5 transition-all"
+                    >
+                      <block.icon size={14} /> 
+                      <span className="text-[9px] font-black uppercase tracking-widest text-center">{block.label}</span>
+                    </button>
+                 ))}
               </div>
             </div>
           )}
 
-          {activeTab === 'sections' && (
+          {activeTab === 'content' && (
             <div className="space-y-6">
-              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-400">Visibilidade de Seções</h4>
-              <div className="space-y-2">
-                {[
-                  { id: 'show_testimonials', label: 'Depoimentos', icon: MessageSquare },
-                  { id: 'show_faq', label: 'FAQ / Perguntas', icon: Settings2 },
-                  { id: 'show_stats', label: 'Estatísticas', icon: BarChart3 },
-                ].map((s) => (
-                  <button
-                    key={s.id}
-                    onClick={() => handleChange(s.id, !brand[s.id])}
-                    className={`w-full p-4 rounded-2xl flex items-center justify-between border transition-all ${brand[s.id] ? 'bg-indigo-500/10 border-indigo-500/30 text-white' : 'bg-white/5 border-transparent text-white/40'}`}
-                  >
-                    <div className="flex items-center gap-3">
-                       <s.icon size={18} />
-                       <span className="text-xs font-bold tracking-tight">{s.label}</span>
-                    </div>
-                    {brand[s.id] ? <Eye size={16} /> : <EyeOff size={16} />}
-                  </button>
-                ))}
-              </div>
+              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-400">Conteúdo dos Blocos</h4>
+              
+              {!editingBlock ? (
+                <div className="space-y-3">
+                   <p className="text-[10px] text-white/30 italic">Selecione um bloco para editar os textos:</p>
+                   {brand.layout_order.map((blockId: string) => (
+                      <button 
+                        key={blockId} 
+                        onClick={() => setEditingBlock(blockId)}
+                        className="w-full p-4 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-between hover:border-indigo-500/50 transition-all group"
+                      >
+                         <span className="text-xs font-bold uppercase text-white/70 group-hover:text-white">{blockId}</span>
+                         <Plus size={14} className="text-white/20 group-hover:text-indigo-400" />
+                      </button>
+                   ))}
+                </div>
+              ) : (
+                <div className="space-y-6">
+                   <button onClick={() => setEditingBlock(null)} className="text-[10px] font-black uppercase text-indigo-400 flex items-center gap-2 hover:underline">
+                      ← Voltar para Lista
+                   </button>
+                   
+                   <div className="p-4 bg-indigo-500/10 border border-indigo-500/30 rounded-2xl">
+                      <p className="text-[10px] font-black uppercase text-indigo-400 mb-1">Editando Bloco</p>
+                      <p className="text-lg font-black text-white italic tracking-tighter uppercase">{editingBlock}</p>
+                   </div>
+
+                   <div className="space-y-4">
+                      <Input 
+                        label="Título do Bloco" 
+                        value={brand.sections_data?.[editingBlock]?.title || ''} 
+                        onChange={(e) => handleSectionDataChange(editingBlock, 'title', e.target.value)} 
+                      />
+                      <Input 
+                        label="Subtítulo / Badge" 
+                        value={brand.sections_data?.[editingBlock]?.badge || brand.sections_data?.[editingBlock]?.subtitle || ''} 
+                        onChange={(e) => handleSectionDataChange(editingBlock, editingBlock === 'hero' ? 'badge' : 'subtitle', e.target.value)} 
+                      />
+                      
+                      {editingBlock === 'hero' && (
+                        <Input 
+                          label="Descrição Principal" 
+                          textarea
+                          value={brand.sections_data?.[editingBlock]?.description || ''} 
+                          onChange={(e) => handleSectionDataChange(editingBlock, 'description', e.target.value)} 
+                        />
+                      )}
+
+                      {/* EDIÇÃO DE ITENS (LISTAS) */}
+                      {['gallery', 'pricing', 'specs', 'trust'].includes(brand.sections_data?.[editingBlock]?.type) && (
+                        <div className="pt-4 space-y-4">
+                           <p className="text-[10px] font-black uppercase text-indigo-400">Itens da Lista</p>
+                           <div className="space-y-3">
+                              {(brand.sections_data?.[editingBlock]?.items || []).map((item: any, idx: number) => (
+                                 <div key={idx} className="p-4 bg-white/[0.03] border border-white/5 rounded-xl space-y-3">
+                                    <div className="flex justify-between items-center">
+                                       <span className="text-[10px] font-bold text-white/40">Item #{idx + 1}</span>
+                                       <button 
+                                          onClick={() => {
+                                            const newItems = [...brand.sections_data[editingBlock].items];
+                                            newItems.splice(idx, 1);
+                                            handleSectionDataChange(editingBlock, 'items', newItems);
+                                          }}
+                                          className="text-red-400 hover:text-red-300"
+                                       >
+                                          <Trash2 size={12} />
+                                       </button>
+                                    </div>
+                                    <Input 
+                                      label="Título/Nome" 
+                                      value={item.title || item.label || item.name || ''} 
+                                      onChange={(e) => {
+                                        const newItems = [...brand.sections_data[editingBlock].items];
+                                        newItems[idx] = { ...newItems[idx], [item.title ? 'title' : item.label ? 'label' : 'name']: e.target.value };
+                                        handleSectionDataChange(editingBlock, 'items', newItems);
+                                      }}
+                                    />
+                                    {(item.price || item.value) && (
+                                       <Input 
+                                          label="Preço/Valor" 
+                                          value={item.price || item.value || ''} 
+                                          onChange={(e) => {
+                                            const newItems = [...brand.sections_data[editingBlock].items];
+                                            newItems[idx] = { ...newItems[idx], [item.price ? 'price' : 'value']: e.target.value };
+                                            handleSectionDataChange(editingBlock, 'items', newItems);
+                                          }}
+                                       />
+                                    )}
+                                 </div>
+                              ))}
+                              <button 
+                                onClick={() => {
+                                  const currentItems = brand.sections_data[editingBlock].items || [];
+                                  const newItem = editingBlock === 'pricing' ? { name: 'Novo Plano', price: 'R$ 99' } : { title: 'Novo Item', description: '' };
+                                  handleSectionDataChange(editingBlock, 'items', [...currentItems, newItem]);
+                                }}
+                                className="w-full py-3 border border-dashed border-white/10 rounded-xl text-[10px] font-black uppercase text-white/30 hover:text-indigo-400 transition-all"
+                              >
+                                + Adicionar Item
+                              </button>
+                           </div>
+                        </div>
+                      )}
+                   </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -391,6 +583,34 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ client, onSave }) =>
                     <div className={`absolute bottom-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full -mb-12 -mr-12 transition-transform duration-500 group-hover:scale-150`} />
                   </button>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'seo' && (
+            <div className="space-y-6">
+              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-400">SEO & Performance</h4>
+              <div className="space-y-4">
+                 <Input 
+                    label="Template de Título (Meta Title)" 
+                    placeholder="{{service}} em {{location}} | {{brand}}"
+                    value={brand.meta_title_template || ''} 
+                    onChange={(e) => handleChange('meta_title_template', e.target.value)} 
+                 />
+                 <p className="text-[9px] text-white/20 italic">Use {'{{service}}'}, {'{{location}}'} e {'{{brand}}'} como variáveis.</p>
+                 
+                 <Input 
+                    label="Favicon URL (.ico ou .png)" 
+                    value={brand.favicon_url || ''} 
+                    onChange={(e) => handleChange('favicon_url', e.target.value)} 
+                 />
+                 
+                 <Input 
+                    label="Google Analytics ID (GA4)" 
+                    placeholder="G-XXXXXXXXXX"
+                    value={brand.analytics_id || ''} 
+                    onChange={(e) => handleChange('analytics_id', e.target.value)} 
+                 />
               </div>
             </div>
           )}
@@ -427,6 +647,21 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ client, onSave }) =>
               <span className="ml-4 text-[10px] font-black uppercase tracking-widest text-white/20">Live Preview Mode</span>
            </div>
 
+            <div className="flex p-1 bg-white/5 rounded-2xl border border-white/10">
+              {[
+                { id: 'light', icon: Sun, label: 'Claro' },
+                { id: 'dark', icon: Moon, label: 'Escuro' },
+              ].map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => setPreviewTheme(t.id as any)}
+                  className={`px-3 py-2 rounded-xl transition-all ${previewTheme === t.id ? 'bg-indigo-500 text-white shadow-lg' : 'text-white/20 hover:text-white/40'}`}
+                >
+                  <t.icon size={14} />
+                </button>
+              ))}
+            </div>
+
            <div className="flex p-1 bg-white/5 rounded-2xl border border-white/10">
             {[
               { id: 'mobile', icon: Smartphone, label: 'Mobile' },
@@ -452,7 +687,9 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ client, onSave }) =>
         {/* Preview Frame with Device Mockup Effect */}
         <div className="flex-1 flex items-center justify-center p-6 md:p-12 overflow-hidden perspective-1000">
           <div 
-            className={`bg-white transition-all duration-700 shadow-[0_60px_100px_-20px_rgba(0,0,0,0.8)] overflow-hidden h-full border-[10px] border-[#1a1a1f] relative group ${
+            className={`transition-all duration-700 shadow-[0_60px_100px_-20px_rgba(0,0,0,0.8)] overflow-hidden h-full border-[10px] border-[#1a1a1f] relative group ${
+              previewTheme === 'dark' ? 'bg-[#0a0a0f]' : 'bg-white'
+            } ${
               viewport === 'mobile' ? 'w-[375px] rounded-[60px]' : viewport === 'tablet' ? 'w-[768px] rounded-[40px]' : 'w-full rounded-[20px]'
             }`}
           >
@@ -465,7 +702,7 @@ export const VisualEditor: React.FC<VisualEditorProps> = ({ client, onSave }) =>
 
             <div 
               id="preview-root"
-              className="h-full overflow-y-auto custom-scrollbar bg-white"
+              className={`h-full overflow-y-auto custom-scrollbar ${previewTheme}`}
               style={{ 
                 ...previewStyles, 
                 fontFamily: `'${brand.font_secondary}', sans-serif`,

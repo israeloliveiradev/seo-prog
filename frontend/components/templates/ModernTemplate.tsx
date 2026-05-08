@@ -55,10 +55,6 @@ export const ModernTemplate: React.FC<TemplateProps> = ({ client, page, pages })
     <div className="min-h-screen bg-background text-foreground font-sans selection:bg-indigo-500/30 overflow-x-hidden transition-colors duration-300">
       <GoogleFontsLoader fontFamily={fontFamily} />
       
-      <div className="fixed top-6 right-6 z-[100]">
-        <ThemeToggle />
-      </div>
-
       {/* 1. HERO - Impacto Imediato */}
       <HeroSection {...heroData} />
 
@@ -111,17 +107,17 @@ export const ModernTemplate: React.FC<TemplateProps> = ({ client, page, pages })
                 title={`Atendimento Local em ${page?.location}`}
                 subtitle="Nossa base física garante a segurança e proximidade que você precisa."
               />
-              <div className="p-8 bg-white/5 border border-white/10 rounded-[32px] space-y-4">
-                 <p className="text-sm font-black uppercase tracking-widest text-white/30">Endereço Principal</p>
-                 <p className="text-xl md:text-2xl font-black italic text-white">{brand?.address || 'Consulte nossa localização'}</p>
+              <div className="p-8 bg-muted/50 border border-border rounded-[32px] space-y-4">
+                 <p className="text-[10px] font-black uppercase tracking-widest opacity-40">Endereço Principal</p>
+                 <p className="text-xl md:text-2xl font-black italic text-foreground">{brand?.address || 'Consulte nossa localização'}</p>
               </div>
            </div>
-           <div className="h-[400px] md:h-[600px] bg-white/5 border border-white/10 rounded-[40px] overflow-hidden shadow-2xl">
+           <div className="h-[400px] md:h-[600px] bg-muted/50 border border-border rounded-[40px] overflow-hidden shadow-2xl">
               <iframe 
                 width="100%" 
                 height="100%" 
                 src={publicMapUrl} 
-                className="grayscale invert opacity-50 contrast-125 hover:opacity-100 transition-opacity duration-700"
+                className="grayscale opacity-50 contrast-125 hover:opacity-100 dark:invert transition-opacity duration-700"
               />
            </div>
         </div>
@@ -163,8 +159,14 @@ export const ModernTemplate: React.FC<TemplateProps> = ({ client, page, pages })
       {/* 10. RODAPÉ */}
       <footer className="py-20 px-6 bg-background text-center space-y-10">
          <div className="flex items-center justify-center gap-3">
-            <div className="w-1.5 h-8 bg-indigo-500 rounded-full" />
-            <span className="text-2xl font-black italic uppercase tracking-tighter text-foreground">{client.name}</span>
+            {brand?.logo_url ? (
+              <img src={brand.logo_url} alt={client.name} className="h-12 w-auto object-contain" />
+            ) : (
+              <>
+                <div className="w-1.5 h-8 bg-indigo-500 rounded-full" />
+                <span className="text-2xl font-black italic uppercase tracking-tighter text-foreground">{client.name}</span>
+              </>
+            )}
          </div>
          <p className="text-[10px] font-black uppercase tracking-[0.5em] text-muted-foreground/50 italic">
            © {new Date().getFullYear()} {client.name} — Programmatic Authority

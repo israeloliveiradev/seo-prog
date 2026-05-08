@@ -22,35 +22,42 @@ export const ModularTemplate: React.FC<TemplateProps> = ({ client, page, pages }
         { label: 'Garantia', value: '12 Meses' },
         { label: 'Material', value: 'Aço Escovado' },
         { label: 'Eficiência', value: 'Classe A' }
-      ]
-    },
-    gallery: {
-      type: 'gallery',
-      title: 'Destaques da Loja',
-      items: [
-        { title: 'Produto Premium', description: 'O melhor para você.', imageUrl: 'https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=800' }
-      ]
-    }
-  };
+  const designMode = brand?.design_mode || 'modern';
   
   return (
-    <div className="bg-white min-h-screen transition-all duration-500">
+    <div className={`min-h-screen transition-colors duration-500 font-sans ${designMode === 'cyber' ? 'bg-[#050508] text-white' : 'bg-background text-foreground'}`}>
       <GoogleFontsLoader fontFamily={brand?.font_family || 'Inter'} />
       
-      {/* O MOTOR RENDERIZA TUDO AQUI */}
-      <BlockRenderer 
-        layout={layout} 
-        sectionsData={sectionsData} 
-        brand={brand} 
-        page={page} 
-      />
+      {/* Global Aesthetics Layer */}
+      {designMode === 'glass' && (
+        <div className="fixed inset-0 pointer-events-none z-0 opacity-20" style={{ backgroundImage: `url('https://grainy-gradients.vercel.app/noise.svg')` }} />
+      )}
+      
+      {designMode === 'cyber' && (
+        <div className="fixed inset-0 pointer-events-none z-0 opacity-10 bg-[radial-gradient(circle_at_50%_50%,var(--primary)_0%,transparent_50%)]" />
+      )}
 
-      {/* FOOTER PADRÃO */}
-      <footer className="py-20 border-t border-slate-100 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-6 text-center space-y-6">
-           <h2 className="text-2xl font-black italic tracking-tighter uppercase">{client.name}</h2>
-           <p className="text-[10px] font-bold uppercase tracking-[0.4em] opacity-30 italic">© {new Date().getFullYear()} — Built with Modular Engine</p>
-        </div>
+      <main className="relative z-10">
+        <BlockRenderer 
+          layout={brand?.layout_order || ['hero', 'specs', 'gallery']} 
+          sectionsData={brand?.sections_data || {}} 
+          brand={brand} 
+          page={page} 
+        />
+      </main>
+
+      {/* Modern Footer Modular */}
+      <footer className="py-20 px-6 border-t border-border/50 text-center">
+         <div className="flex flex-col items-center gap-6">
+            {brand?.logo_url ? (
+              <img src={brand.logo_url} className="h-10 w-auto opacity-80" alt="Logo" />
+            ) : (
+              <span className="text-xl font-black tracking-tighter italic uppercase">{client.name}</span>
+            )}
+            <p className="text-[10px] font-black uppercase tracking-[0.5em] opacity-30 italic">
+              © {new Date().getFullYear()} {client.name} — Programmatic Lego Engine
+            </p>
+         </div>
       </footer>
     </div>
   );

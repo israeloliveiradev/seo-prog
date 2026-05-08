@@ -7,6 +7,12 @@
       "skillPath": "skills/find-bugs/SKILL.md",
       "computedHash": "58b6a1bdc071068e031e6bb7e48a3ece07ba427b117e3bd50858a62c217e397c"
     },
+    "product-brainstorming": {
+      "source": "anthropics/knowledge-work-plugins",
+      "sourceType": "github",
+      "skillPath": "product-management/skills/product-brainstorming/SKILL.md",
+      "computedHash": "595e6cc5bb85da6b67b35c24d4d3906c6bac42a1fe4ecbe71fa154176d724c1b"
+    },
     "qa-test-planner": {
       "source": "softaworks/agent-toolkit",
       "sourceType": "github",

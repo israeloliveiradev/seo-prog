@@ -87,9 +87,21 @@ export async function generateMetadata({ params }: SitePageProps): Promise<Metad
   if (!data) return { title: 'Não encontrado' };
 
   const { client, page } = data;
+  const brand = client.brand_settings;
+  
+  // Lógica de Template de Título
+  let title = `${page.service_name} em ${page.location} | ${brand?.company_name || client.name}`;
+  if (brand?.meta_title_template) {
+    title = brand.meta_title_template
+      .replace('{{service}}', page.service_name)
+      .replace('{{location}}', page.location)
+      .replace('{{brand}}', brand?.company_name || client.name);
+  }
+
   return {
-    title: `${page.service_name} em ${page.location} | ${client.brand_settings?.company_name || client.name}`,
+    title,
     description: page.meta_description,
+    icons: brand?.favicon_url ? { icon: brand.favicon_url } : undefined
   };
 }
 

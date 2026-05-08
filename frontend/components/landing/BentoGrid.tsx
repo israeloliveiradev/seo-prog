@@ -34,7 +34,6 @@ export const BentoGrid: React.FC<BentoGridProps> = ({ items }) => {
             key={idx}
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
             transition={{ delay: idx * 0.1 }}
             whileHover={{ y: -5 }}
             className={`${spanClass} relative group rounded-[32px] md:rounded-[48px] bg-card border border-border p-8 md:p-12 overflow-hidden flex flex-col justify-between transition-all hover:bg-muted/50 hover:border-accent/30 shadow-lg`}
